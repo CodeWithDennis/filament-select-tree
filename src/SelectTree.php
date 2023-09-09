@@ -2,14 +2,10 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-use Closure;
 use Filament\Forms\Components\Component;
-use Filament\Support\Colors\Color;
-use Filament\Support\Concerns\HasColor;
 
 class SelectTree extends Component
 {
-
     protected array $options = [];
 
     protected string $view = 'select-tree::tree';
@@ -42,5 +38,4 @@ class SelectTree extends Component
     {
         return $this->evaluate($this->options);
     }
-
 }
