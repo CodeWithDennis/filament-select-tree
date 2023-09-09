@@ -4,6 +4,7 @@ namespace CodeWithDennis\FilamentSelectTree\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
+use CodeWithDennis\FilamentSelectTree\FilamentSelectTreeServiceProvider;
 use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use CodeWithDennis\FilamentSelectTree\FilamentSelectTreeServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -27,7 +27,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'CodeWithDennis\\FilamentSelectTree\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'CodeWithDennis\\FilamentSelectTree\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

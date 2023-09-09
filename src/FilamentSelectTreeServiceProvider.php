@@ -2,6 +2,8 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
+use CodeWithDennis\FilamentSelectTree\Commands\FilamentSelectTreeCommand;
+use CodeWithDennis\FilamentSelectTree\Testing\TestsFilamentSelectTree;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
@@ -13,8 +15,6 @@ use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use CodeWithDennis\FilamentSelectTree\Commands\FilamentSelectTreeCommand;
-use CodeWithDennis\FilamentSelectTree\Testing\TestsFilamentSelectTree;
 
 class FilamentSelectTreeServiceProvider extends PackageServiceProvider
 {
@@ -80,7 +80,7 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
 
         // Handle Stubs
         if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
+            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/filament-select-tree/{$file->getFilename()}"),
                 ], 'filament-select-tree-stubs');
@@ -103,8 +103,8 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
     {
         return [
             // AlpineComponent::make('filament-select-tree', __DIR__ . '/../resources/dist/components/filament-select-tree.js'),
-            Css::make('filament-select-tree-styles', __DIR__ . '/../resources/dist/filament-select-tree.css'),
-            Js::make('filament-select-tree-scripts', __DIR__ . '/../resources/dist/filament-select-tree.js'),
+            Css::make('filament-select-tree-styles', __DIR__.'/../resources/dist/filament-select-tree.css'),
+            Js::make('filament-select-tree-scripts', __DIR__.'/../resources/dist/filament-select-tree.js'),
         ];
     }
 
