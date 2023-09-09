@@ -34,8 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "CodeWithDennis\\FilamentSelectTree\\": "src/",
-            "CodeWithDennis\\FilamentSelectTree\\Database\\Factories\\": "database/factories/"
+            "CodeWithDennis\\FilamentSelectTree\\": "src/"
         }
     },
     "autoload-dev": {
@@ -59,10 +58,7 @@
         "laravel": {
             "providers": [
                 "CodeWithDennis\\FilamentSelectTree\\FilamentSelectTreeServiceProvider"
-            ],
-            "aliases": {
-                "FilamentSelectTree": "CodeWithDennis\\FilamentSelectTree\\Facades\\FilamentSelectTree"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
