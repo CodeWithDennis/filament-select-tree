@@ -2,15 +2,12 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-use CodeWithDennis\FilamentSelectTree\Commands\FilamentSelectTreeCommand;
 use CodeWithDennis\FilamentSelectTree\Testing\TestsFilamentSelectTree;
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -45,10 +42,6 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
             $package->hasConfigFile();
         }
 
-        if (file_exists($package->basePath('/../database/migrations'))) {
-            $package->hasMigrations($this->getMigrations());
-        }
-
         if (file_exists($package->basePath('/../resources/lang'))) {
             $package->hasTranslations();
         }
@@ -78,15 +71,6 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
         // Icon Registration
         FilamentIcon::register($this->getIcons());
 
-        // Handle Stubs
-        if (app()->runningInConsole()) {
-            foreach (app(Filesystem::class)->files(__DIR__.'/../stubs/') as $file) {
-                $this->publishes([
-                    $file->getRealPath() => base_path("stubs/filament-select-tree/{$file->getFilename()}"),
-                ], 'filament-select-tree-stubs');
-            }
-        }
-
         // Testing
         Testable::mixin(new TestsFilamentSelectTree());
     }
@@ -113,9 +97,7 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
-        return [
-            FilamentSelectTreeCommand::class,
-        ];
+        return [];
     }
 
     /**
@@ -147,8 +129,6 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
      */
     protected function getMigrations(): array
     {
-        return [
-            'create_filament-select-tree_table',
-        ];
+        return [];
     }
 }
