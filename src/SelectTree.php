@@ -2,13 +2,11 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
 
 class SelectTree extends Field
 {
-
     protected array $options = [];
 
     protected string $view = 'select-tree::tree';
