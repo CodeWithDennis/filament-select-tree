@@ -18,7 +18,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function getOptions(): Collection
+    public function getOptions(): array
     {
         return $this->evaluate($this->options);
     }
