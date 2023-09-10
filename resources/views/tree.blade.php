@@ -1,7 +1,3 @@
-@php
-    $options = $getOptions();
-@endphp
-<div>
-    {{--  Build Select Tree Here   --}}
-    Select Tree Here
-</div>
+<x-dynamic-component :component="$getFieldWrapperView()" :field="$field" class="tree-field">
+    <!-- Tree Field-->
+</x-dynamic-component>

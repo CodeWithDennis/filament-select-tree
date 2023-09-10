@@ -2,30 +2,16 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-use Filament\Forms\Components\Component;
 
-class SelectTree extends Component
+use Filament\Forms\Components\Field;
+use Illuminate\Support\Collection;
+
+class SelectTree extends Field
 {
+
     protected array $options = [];
 
     protected string $view = 'select-tree::tree';
-
-    final public function __construct()
-    {
-
-    }
-
-    public static function make(string $name): static
-    {
-        return app(static::class);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->dehydrated(false);
-    }
 
     public function options(array $options): static
     {
@@ -34,7 +20,7 @@ class SelectTree extends Component
         return $this;
     }
 
-    public function getOptions(): array
+    public function getOptions(): Collection
     {
         return $this->evaluate($this->options);
     }

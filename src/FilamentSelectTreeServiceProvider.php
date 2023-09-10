@@ -19,8 +19,6 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
-        FilamentAsset::register([
-            Css::make('tree', __DIR__.'/../resources/dist/tree.css')->loadedOnRequest(),
-        ], 'codewithdennis/filament-select-tree');
+        //
     }
 }
