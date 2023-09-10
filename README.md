@@ -7,7 +7,7 @@
 
 
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+The multi-level select field enables you to make single selections from a predefined list of options that are organized into multiple levels or depths.
 
 ## Installation
 
