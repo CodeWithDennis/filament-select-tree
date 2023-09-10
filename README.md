@@ -1,4 +1,4 @@
-# The multi-level select field enables you to make single selections from a predefined list of options that are organized into multiple levels or depths.
+# Filament Select Tree
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codewithdennis/filament-select-tree.svg?style=flat-square)](https://packagist.org/packages/codewithdennis/filament-select-tree)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/codewithdennis/filament-select-tree/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/codewithdennis/filament-select-tree/actions?query=workflow%3Arun-tests+branch%3Amain)
