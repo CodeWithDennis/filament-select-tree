@@ -1,36 +1,39 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
-
-    <script src="{{ \Filament\Support\Facades\FilamentAsset::getScriptSrc('tree', package: 'codewithdennis/filament-select-tree') }}"></script>
-    <link rel="stylesheet" href="{{ \Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree') }}">
-
-    <div id="tree" wire:ignore class=""></div>
+    <div
+        x-data
+        x-load-js="[@js(\Filament\Support\Facades\FilamentAsset::getScriptSrc('tree', package: 'codewithdennis/filament-select-tree'))]"
+        x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree'))]"
+    >
+        <div id="tree" wire:ignore></div>
+    </div>
 
     <script>
-
-        const domElement = document.querySelector('#tree')
-
-        const tree = new Treeselect({
-            value: {{ $getRecord()->{$getName()} }},
-            isSingleSelect: "{{ !$getMultiple() }}",
-            parentHtmlContainer: domElement,
-            options: @json($getOptions()),
-            disabledBranchNode: true,
-            isIndependentNodes: true,
-            searchable: "{{ $getSearchable() }}",
-            // openLevel: 1,
-            showCount: true,
-            clearable: false,
-            disabled: false,
-            saveScrollPosition: true,
-            showTags: false,
-            // alwaysOpen: true,
-        });
-
-        tree.srcElement.addEventListener('input', (e) => {
-        @this.set("{{ $getStatePath() }}", e.detail);
-        });
-
+        window.addEventListener('load', () => {
+            const tree = new Treeselect({
+                value: "{{ $getRecord()->{$getName()} ?? null }}",
+                isSingleSelect: "{{ !$getMultiple() }}",
+                options: @json($getOptions()),
+                searchable: "{{ $getSearchable() }}",
+                clearable: "{{ $getClearable() }}",
+                showCount: "{{ $getCount() }}",
+                placeholder: "{{ $getPlaceholder() }}",
+                showTags: "{{ $getTags() }}",
+                isIndependentNodes: "{{ $getIndependent() }}",
+                disabledBranchNode: true,
+                grouped: true,
+                // openLevel: 1,
+                disabled: false,
+                saveScrollPosition: true,
+                parentHtmlContainer: document.querySelector('#tree'),
+                // alwaysOpen: true,
+            });
+            tree.srcElement.addEventListener('input', (e) => {
+            @this.set("{{ $getStatePath() }}", e.detail);
+            });
+        })
     </script>
+    @push('scripts')
+    @endpush
 
     <style>
         .treeselect-list__item {
