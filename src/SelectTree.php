@@ -7,8 +7,8 @@ use Filament\Forms\Components\Field;
 
 class SelectTree extends Field
 {
-
     protected bool $multiple = false;
+
     protected bool $searchable = false;
 
     protected string $view = 'select-tree::select-tree';
@@ -60,5 +60,4 @@ class SelectTree extends Field
 
         return $options;
     }
-
 }
