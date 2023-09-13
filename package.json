@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "build": "postcss resources/css/index.css -o resources/dist/select-tree.css"
+        "build": "postcss resources/css/tree.css -o resources/dist/tree.css"
     },
     "devDependencies": {
         "cssnano": "^6.0.1",

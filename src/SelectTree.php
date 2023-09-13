@@ -2,23 +2,63 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
+use App\Models\Category;
 use Filament\Forms\Components\Field;
 
 class SelectTree extends Field
 {
-    protected array $options = [];
 
-    protected string $view = 'select-tree::tree';
+    protected bool $multiple = false;
+    protected bool $searchable = false;
 
-    public function options(array $options): static
+    protected string $view = 'select-tree::select-tree';
+
+    public function multiple(bool $multiple = true): static
     {
-        $this->options = $options;
+        $this->multiple = $multiple;
 
         return $this;
     }
 
-    public function getOptions(): array
+    public function searchable(bool $searchable = true): static
     {
-        return $this->evaluate($this->options);
+        $this->searchable = $searchable;
+
+        return $this;
     }
+
+    public function getOptions(): Collection
+    {
+        return $this->evaluate($this->buildTree());
+    }
+
+    public function getMultiple(): bool
+    {
+        return $this->evaluate($this->multiple);
+    }
+
+    public function getSearchable(): bool
+    {
+        return $this->evaluate($this->searchable);
+    }
+
+    private function buildTree($parent = null)
+    {
+
+        // WIP: THIS WILL DYNAMIC OFC! Configurable by the user
+        $categories = Category::where('category_id', $parent)->take(5)->get();
+
+        $options = $categories->map(function ($category) {
+            $children = $this->buildTree($category->id);
+
+            return [
+                'name' => $category->name,
+                'value' => $category->id,
+                'children' => $children->isEmpty() ? null : $children->toArray(),
+            ];
+        });
+
+        return $options;
+    }
+
 }
