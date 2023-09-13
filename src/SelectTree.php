@@ -9,11 +9,17 @@ use Illuminate\Support\Collection;
 class SelectTree extends Field
 {
     protected bool $multiple = false;
+
     protected bool $clearable = false;
+
     protected bool $searchable = false;
+
     protected bool $independent = false;
+
     protected bool $count = false;
+
     protected bool $tags = false;
+
     protected string $placeholder;
 
     protected string $view = 'select-tree::select-tree';
