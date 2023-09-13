@@ -4,6 +4,7 @@ namespace CodeWithDennis\FilamentSelectTree;
 
 use App\Models\Category;
 use Filament\Forms\Components\Field;
+use Illuminate\Support\Collection;
 
 class SelectTree extends Field
 {
@@ -46,7 +47,7 @@ class SelectTree extends Field
     {
 
         // WIP: THIS WILL DYNAMIC OFC! Configurable by the user
-        $categories = Category::where('category_id', $parent)->take(5)->get();
+        $categories = Category::where('category_id', $parent)->take(25)->get();
 
         $options = $categories->map(function ($category) {
             $children = $this->buildTree($category->id);

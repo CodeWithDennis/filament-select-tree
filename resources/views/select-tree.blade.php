@@ -16,16 +16,47 @@
             options: @json($getOptions()),
             disabledBranchNode: true,
             isIndependentNodes: true,
-            searchable: "{{ $getSearchable() }}"
+            searchable: "{{ $getSearchable() }}",
+            // openLevel: 1,
+            showCount: true,
+            clearable: false,
+            disabled: false,
+            saveScrollPosition: true,
+            showTags: false,
+            // alwaysOpen: true,
         });
 
         tree.srcElement.addEventListener('input', (e) => {
-            @this.set("{{ $getStatePath() }}", e.detail);
+        @this.set("{{ $getStatePath() }}", e.detail);
         });
 
     </script>
 
     <style>
+        .treeselect-list__item {
+            height: 36px;
+        }
+
+        .treeselect-input__tags-count {
+            margin-left: 6px;
+        }
+
+        .treeselect-list__item--focused {
+            --tw-bg-opacity: 1;
+            background-color: rgba(var(--gray-50), var(--tw-bg-opacity)) !important;
+            border-radius: 0.375rem;
+        }
+
+        .treeselect-list__item--group:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgba(var(--gray-50), var(--tw-bg-opacity)) !important;
+            border-radius: 0.375rem;
+        }
+
+        .treeselect-input__tags-element:hover {
+            background-color: inherit 30;
+        }
+
         .treeselect-input {
             line-height: 1.5rem;
             font-size: .875rem;
@@ -41,6 +72,7 @@
         }
 
         .treeselect-list {
+            padding: 0.25rem;
             --tw-bg-opacity: 1;
             --tw-shadow: 0 10px 15px -3px rgba(0, 0, 0, .1), 0 4px 6px -4px rgba(0, 0, 0, .1);
             --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
