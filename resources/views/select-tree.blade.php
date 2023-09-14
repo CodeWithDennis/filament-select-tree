@@ -10,18 +10,20 @@
         <script>
             window.addEventListener('load', () => {
                 const tree = new Treeselect({
+                    id: "tree-{{ $getName() }}-id",
+                    ariaLabel: "tree-{{ $getName() }}-label",
                     parentHtmlContainer: document.querySelector('#tree'),
                     value: {{ $getRecord()->{$getName()} ?? 0 }},
-                    isSingleSelect: "{{ !$getMultiple() }}",
-                    options: @json($getOptions()),
-                    searchable: "{{ $getSearchable() }}",
-                    clearable: "{{ $getClearable() }}",
+                    options: @json($getTree()),
+                    searchable: "{{ $isSearchable() }}",
                     showCount: "{{ $getWithCount() }}",
                     placeholder: "{{ $getPlaceholder() }}",
-                    showTags: "{{ $getTags() }}",
-                    isIndependentNodes: "{{ $getIndependent() }}",
                     disabledBranchNode: "{{ $getDisabledBranchNode() }}",
                     disabled: "{{ $isDisabled() }}",
+                    // TODO: Upcoming features
+                    isSingleSelect: true,
+                    showTags: false,
+                    clearable: false,
                 });
                 tree.srcElement.addEventListener('input', (e) => {
                 @this.set("{{ $getStatePath() }}", e.detail);
