@@ -2,34 +2,37 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-use App\Models\Category;
+use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
 
 class SelectTree extends Field
 {
+    use CanBeDisabled;
+
     protected bool $multiple = false;
 
     protected bool $clearable = false;
 
     protected bool $searchable = false;
-
     protected bool $independent = false;
-
-    protected bool $count = false;
-
+    protected bool $withCount = false;
     protected bool $tags = false;
+    protected bool $disabledBranchNode = false;
 
     protected string $placeholder;
+    protected string $treeModel;
+    protected string $treeParentKey;
+    protected string $treeValueLabel;
 
     protected string $view = 'select-tree::select-tree';
 
-    public function multiple(bool $multiple = true): static
-    {
-        $this->multiple = $multiple;
-
-        return $this;
-    }
+//    public function multiple(bool $multiple = true): static
+//    {
+//        $this->multiple = $multiple;
+//
+//        return $this;
+//    }
 
     public function independent(bool $independent = true): static
     {
@@ -38,9 +41,9 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function count(bool $count = true): static
+    public function withCount(bool $withCount = true): static
     {
-        $this->count = $count;
+        $this->withCount = $withCount;
 
         return $this;
     }
@@ -66,9 +69,16 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function tags(bool $tags = true): static
+//    public function tags(bool $tags = true): static
+//    {
+//        $this->tags = $tags;
+//
+//        return $this;
+//    }
+
+    public function disabledBranchNode(bool $disabledBranchNode = true): static
     {
-        $this->tags = $tags;
+        $this->disabledBranchNode = $disabledBranchNode;
 
         return $this;
     }
@@ -78,9 +88,9 @@ class SelectTree extends Field
         return $this->evaluate($this->buildTree());
     }
 
-    public function getCount(): bool
+    public function getWithCount(): bool
     {
-        return $this->evaluate($this->count);
+        return $this->evaluate($this->withCount);
     }
 
     public function getMultiple(): bool
@@ -103,9 +113,14 @@ class SelectTree extends Field
         return $this->evaluate($this->placeholder);
     }
 
+    public function getDisabledBranchNode(): bool
+    {
+        return $this->evaluate($this->disabledBranchNode);
+    }
+
     public function getClearable(): bool
     {
-        return $this->evaluate($this->clearable);
+        return $this->evaluate($this->clearable) && $this->isEnabled();
     }
 
     public function getSearchable(): bool
@@ -113,23 +128,28 @@ class SelectTree extends Field
         return $this->evaluate($this->searchable);
     }
 
-    private function buildTree($parent = null)
+    public function tree(string $treeModel, string $treeParentKey, string $treeValueLabel): static
     {
+        $this->treeModel = $treeModel;
+        $this->treeParentKey = $treeParentKey;
+        $this->treeValueLabel = $treeValueLabel;
 
-        // WIP: THIS WILL DYNAMIC OFC! Configurable by the user
-        $categories = Category::where('category_id', $parent)->take(25)->get();
+        return $this;
+    }
 
-        $options = $categories->map(function ($category) {
-            $children = $this->buildTree($category->id);
+    private function buildTree(?int $parent = null): Collection
+    {
+        // TEST CODE
+        $results = $this->treeModel::where($this->treeParentKey, $parent)
+            ->get();
 
+        return $results->map(function ($result) {
+            $children = $this->buildTree($result->id);
             return [
-                'id' => $category->id,
-                'name' => $category->name,
-                'value' => $category->id,
+                'name' => $result->{$this->treeValueLabel},
+                'value' => $result->id,
                 'children' => $children->isEmpty() ? null : $children->toArray(),
             ];
         });
-
-        return $options;
     }
 }
