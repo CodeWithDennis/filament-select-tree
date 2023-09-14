@@ -2,7 +2,6 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-
 use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
@@ -18,9 +17,13 @@ class SelectTree extends Field
     protected string $view = 'select-tree::select-tree';
 
     protected bool $withCount = false;
+
     protected bool $disabledBranchNode = false;
+
     protected string $treeModel;
+
     protected string $treeParentKey;
+
     protected string $titleAttribute;
 
     public function withCount(bool $withCount = true): static
