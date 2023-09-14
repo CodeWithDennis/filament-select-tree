@@ -2,8 +2,8 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
+use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -23,7 +23,7 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Css::make('tree', __DIR__.'/../resources/dist/tree.css')
                 ->loadedOnRequest(),
-            Js::make('tree', __DIR__.'/../resources/js/tree.js')
+            AlpineComponent::make('tree', __DIR__.'/../resources/js/tree.js')
                 ->loadedOnRequest(),
         ], 'codewithdennis/filament-select-tree');
     }
