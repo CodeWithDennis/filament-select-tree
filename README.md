@@ -42,9 +42,10 @@ SelectTree::make('category_id')
     // Using this function, the SelectTree is disabled. (You can also use: ->disabledOn(''))
     ->disabled(),
 ```
-## Screenshot
+## Video
 
-![select-tree-example](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/688713ae-015e-416c-a2c2-b3e6e049a74d)
+https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/8d49374c-4cf4-4dfc-bddd-0e917518d1f1
+
 
 ## Changelog
 
