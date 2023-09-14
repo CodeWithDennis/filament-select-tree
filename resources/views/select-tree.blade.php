@@ -7,11 +7,11 @@
         <div
             x-ignore
             ax-load="visible"
-            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getScriptSrc('tree', package: 'codewithdennis/filament-select-tree') }}"
+            ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree', package: 'codewithdennis/filament-select-tree') }}"
             x-data="tree({
-                state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath}')") }},
                 name: '{{ $getName() }}',
-                options: @json($getTree()),
+                state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
+                options: {{ json_encode($getTree()) }},
                 searchable: '{{ $isSearchable() }}',
                 showCount: '{{ $getWithCount() }}',
                 placeholder: '{{ $getPlaceholder() }}',
