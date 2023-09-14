@@ -18,20 +18,31 @@ composer require codewithdennis/filament-select-tree
 At the moment, it only works with fields that accept single values.
 
 ```PHP
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+use App\Models\Category;
+
 SelectTree::make('category_id')
-    // It creates the select tree by utilizing the Category model, where 'category_id' serves as the parent column, and 'name' is used as the label for the tree nodes.
+    // It uses the Category model to build a select tree with 'category_id' as the parent column and 'name' as the node label.
     ->tree(Category::class, 'category_id', 'name')
+
     // Here, the label 'Category' is assigned to the field.
     ->label(__('Category'))
+
     // By calling this function, it ensures that only leaf nodes can be selected while preventing the selection of groups.
     ->disabledBranchNode()
+
     // Enabling this feature will show the count of children alongside the group's name.
     ->withCount()
+
     // By calling this function, it activates the search functionality for the SelectTree.
     ->searchable()
+
     // Using this function, the SelectTree is disabled. (You can also use: ->disabledOn(''))
     ->disabled(),
 ```
+## Screenshot
+
+![select-tree-example](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/688713ae-015e-416c-a2c2-b3e6e049a74d)
 
 ## Changelog
 
