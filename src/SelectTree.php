@@ -15,24 +15,31 @@ class SelectTree extends Field
     protected bool $clearable = false;
 
     protected bool $searchable = false;
+
     protected bool $independent = false;
+
     protected bool $withCount = false;
+
     protected bool $tags = false;
+
     protected bool $disabledBranchNode = false;
 
     protected string $placeholder;
+
     protected string $treeModel;
+
     protected string $treeParentKey;
+
     protected string $treeValueLabel;
 
     protected string $view = 'select-tree::select-tree';
 
-//    public function multiple(bool $multiple = true): static
-//    {
-//        $this->multiple = $multiple;
-//
-//        return $this;
-//    }
+    //    public function multiple(bool $multiple = true): static
+    //    {
+    //        $this->multiple = $multiple;
+    //
+    //        return $this;
+    //    }
 
     public function independent(bool $independent = true): static
     {
@@ -69,12 +76,12 @@ class SelectTree extends Field
         return $this;
     }
 
-//    public function tags(bool $tags = true): static
-//    {
-//        $this->tags = $tags;
-//
-//        return $this;
-//    }
+    //    public function tags(bool $tags = true): static
+    //    {
+    //        $this->tags = $tags;
+    //
+    //        return $this;
+    //    }
 
     public function disabledBranchNode(bool $disabledBranchNode = true): static
     {
@@ -137,7 +144,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    private function buildTree(?int $parent = null): Collection
+    private function buildTree(int $parent = null): Collection
     {
         // TEST CODE
         $results = $this->treeModel::where($this->treeParentKey, $parent)
@@ -145,6 +152,7 @@ class SelectTree extends Field
 
         return $results->map(function ($result) {
             $children = $this->buildTree($result->id);
+
             return [
                 'name' => $result->{$this->treeValueLabel},
                 'value' => $result->id,
