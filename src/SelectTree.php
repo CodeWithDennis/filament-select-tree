@@ -2,12 +2,12 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
+use Closure;
 use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Illuminate\Support\Collection;
-use Closure;
 
 class SelectTree extends Field
 {
@@ -58,7 +58,7 @@ class SelectTree extends Field
         return $this->evaluate($this->disabledBranchNode);
     }
 
-    public function tree(string $treeModel, string $treeParentKey, string $titleAttribute, ?Closure $modifyQueryUsing = null): static
+    public function tree(string $treeModel, string $treeParentKey, string $titleAttribute, Closure $modifyQueryUsing = null): static
     {
         $this->treeModel = $treeModel;
         $this->treeParentKey = $treeParentKey;
@@ -75,7 +75,7 @@ class SelectTree extends Field
             ->where($this->treeParentKey, $parent);
 
         // If not a root level query and a modification callback is provided, apply it.
-        if (!$parent && $this->modifyQueryUsing) {
+        if (! $parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -96,5 +96,4 @@ class SelectTree extends Field
             ];
         });
     }
-
 }
