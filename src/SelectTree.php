@@ -67,7 +67,7 @@ class SelectTree extends Field
 
         return $this;
     }
-    
+
     private function buildTree(int $parent = null): Collection
     {
         // Create a default query to fetch items with the specified parent ID.
