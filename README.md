@@ -24,8 +24,10 @@ use CodeWithDennis\FilamentSelectTree\SelectTree;
 use App\Models\Category;
 
 SelectTree::make('category_id')
-    // It uses the Category model to build a select tree with 'category_id' as the parent column and 'name' as the node label.
-    ->tree(Category::class, 'category_id', 'name')
+    // Creates a select tree with 'Category' model, using 'category_id' as parent and 'name' as label, allowing custom query modification.
+    ->tree(Category::class, 'category_id', 'name', function ($query) {
+        return $query;
+    })
 
     // Here, the label 'Category' is assigned to the field.
     ->label(__('Category'))
