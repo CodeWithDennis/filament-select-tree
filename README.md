@@ -29,19 +29,19 @@ SelectTree::make('category_id')
         return $query;
     })
 
-    // Here, the label 'Category' is assigned to the field.
+    // The label 'Category' is assigned to the field.
     ->label(__('Category'))
 
-    // By calling this function, it ensures that only leaf nodes can be selected while preventing the selection of groups.
+    // Ensures that only leaf nodes can be selected while preventing the selection of groups.
     ->disabledBranchNode()
 
-    // Enabling this feature will show the count of children alongside the group's name.
+    // Show the count of children alongside the group's name.
     ->withCount()
 
-    // By calling this function, it activates the search functionality for the SelectTree.
+    // Activates the search functionality for the SelectTree.
     ->searchable()
 
-    // Using this function, the SelectTree is disabled. (You can also use: ->disabledOn(''))
+    // The tree is disabled. (You can also use: ->disabledOn(''))
     ->disabled(),
 ```
 ## Video
