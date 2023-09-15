@@ -12,6 +12,7 @@ export default function tree({
     isSingleSelect = true,
     showTags = false,
     clearable = false,
+    alwaysOpen,
 }) {
     return {
         state,
@@ -30,7 +31,8 @@ export default function tree({
                 disabled,
                 isSingleSelect,
                 showTags,
-                clearable
+                clearable,
+                alwaysOpen
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {
