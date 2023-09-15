@@ -511,10 +511,6 @@
     background: #fafafa;
 }
 
-.treeselect .treeselect-list, .treeselect-list {
-    position: inherit !important;
-}
-
 .treeselect-input--opened.treeselect-input--top {
     border-top: 1px solid #dddddd !important;
 }

@@ -17,6 +17,7 @@
                 placeholder: '{{ $getPlaceholder() }}',
                 disabledBranchNode: '{{ $getDisabledBranchNode() }}',
                 disabled: '{{ $isDisabled() }}',
+                alwaysOpen: true,
             })"
         >
             <div x-ref="tree"></div>
