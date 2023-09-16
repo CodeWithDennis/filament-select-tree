@@ -1,27 +1,33 @@
 import Treeselect from 'treeselectjs'
 
 export default function tree({
-    state,
-    name,
-    options,
-    searchable,
-    showCount,
-    placeholder,
-    disabledBranchNode,
-    disabled = false,
-    isSingleSelect = true,
-    showTags = false,
-    clearable = false,
-}) {
+                                 state,
+                                 name,
+                                 options,
+                                 searchable,
+                                 showCount,
+                                 placeholder,
+                                 disabledBranchNode,
+                                 disabled = false,
+                                 isSingleSelect = true,
+                                 showTags = true,
+                                 clearable = true,
+                                 isIndependentNodes = true,
+                                 alwaysOpen = false
+                             }) {
     return {
         state,
         tree: null,
         init() {
+            const values = this.isSingleSelect
+                ? (this.state !== null ? this.state : '')
+                : (this.state !== null ? this.state.split(',').map(Number) : '');
+
             this.tree = new Treeselect({
                 id: `tree-${name}-id`,
                 ariaLabel: `tree-${name}-label`,
                 parentHtmlContainer: this.$refs.tree,
-                value: this.state,
+                value: values,
                 options,
                 searchable,
                 showCount,
@@ -30,11 +36,17 @@ export default function tree({
                 disabled,
                 isSingleSelect,
                 showTags,
-                clearable
+                clearable,
+                isIndependentNodes,
+                alwaysOpen,
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {
-                this.state = e.detail;
+                if (Array.isArray(e.detail)) {
+                    this.state = e.detail.join(",");
+                } else {
+                    this.state = e.detail;
+                }
             });
         }
     }

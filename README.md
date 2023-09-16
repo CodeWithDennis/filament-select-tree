@@ -18,8 +18,8 @@ composer require codewithdennis/filament-select-tree
 ## Features
 - ✅ Compatible with dark mode
 - ✅ Featuring search functionality
-- ❌ Multi-select (Coming soon)
-- ❌ Relationships
+- ✅ Comma seperated multi-select
+- ❌ Relationships (Planned)
   
 ## Usage
 
@@ -32,15 +32,34 @@ SelectTree::make('category_id')
     ->tree(Category::class, 'category_id', 'name', function ($query) {
         return $query;
     })
-
+    
     // The label 'Category' is assigned to the field.
     ->label(__('Category'))
+    
+    // Set a custom placeholder for when no items are selected
+    ->placeholder(__('Your custom placeholder here'))
 
     // Ensures that only leaf nodes can be selected while preventing the selection of groups.
     ->disabledBranchNode()
 
     // Show the count of children alongside the group's name.
     ->withCount()
+    
+    // To disable tags and display a text message instead (e.g., "X items have been selected")
+    // Tags is always disabled on single select
+    ->disableTags()
+        
+    // To keep the dropdown open at all times
+    ->alwaysOpen()
+        
+    // By default, all nodes are independent. Set this to false if you want to display groups when all subnodes are selected.
+    ->showGroupsWhenAllSelected(false)
+    
+    // By default, the clearable icon is enabled, but you can hide it with:
+    ->clearable(false)
+    
+    // Enable the option to save multiple values as a string (comma-separated)
+    ->multiple()
 
     // Activates the search functionality for the SelectTree.
     ->searchable()

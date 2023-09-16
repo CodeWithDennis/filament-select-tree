@@ -16,22 +16,56 @@ class SelectTree extends Field
     use HasPlaceholder;
 
     protected string $view = 'select-tree::select-tree';
-
     protected bool $withCount = false;
-
+    protected bool $multiple = false;
+    protected bool $alwaysOpen = false;
+    protected bool $showTags = true;
+    protected bool $independent = true;
+    protected bool $clearable = true;
     protected bool $disabledBranchNode = false;
-
     protected string $treeModel;
-
     protected string $treeParentKey;
-
     protected string $titleAttribute;
-
     protected ?Closure $modifyQueryUsing;
 
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
+
+        return $this;
+    }
+
+    public function clearable(bool $clearable = true): static
+    {
+        $this->clearable = $clearable;
+
+        return $this;
+    }
+
+    public function independent(bool $independent = true): static
+    {
+        $this->independent = $independent;
+
+        return $this;
+    }
+
+    public function showTags(bool $showTags = true): static
+    {
+        $this->showTags = $showTags;
+
+        return $this;
+    }
+
+    public function alwaysOpen(bool $alwaysOpen = true): static
+    {
+        $this->alwaysOpen = $alwaysOpen;
+
+        return $this;
+    }
+
+    public function multiple(bool $multiple = true): static
+    {
+        $this->multiple = $multiple;
 
         return $this;
     }
@@ -48,9 +82,34 @@ class SelectTree extends Field
         return $this->evaluate($this->buildTree());
     }
 
+    public function getIndependent(): bool
+    {
+        return $this->evaluate($this->independent);
+    }
+
     public function getWithCount(): bool
     {
         return $this->evaluate($this->withCount);
+    }
+
+    public function getMultiple(): bool
+    {
+        return $this->evaluate($this->multiple);
+    }
+
+    public function getClearable(): bool
+    {
+        return $this->evaluate($this->clearable);
+    }
+
+    public function getAlwaysOpen(): bool
+    {
+        return $this->evaluate($this->alwaysOpen);
+    }
+
+    public function getShowTags(): bool
+    {
+        return $this->evaluate($this->showTags);
     }
 
     public function getDisabledBranchNode(): bool
