@@ -23,8 +23,6 @@ class SelectTree extends Field
 
     protected bool $alwaysOpen = false;
 
-    protected bool $showTags = true;
-
     protected bool $independent = true;
 
     protected bool $clearable = true;
@@ -56,13 +54,6 @@ class SelectTree extends Field
     public function independent(bool $independent = true): static
     {
         $this->independent = $independent;
-
-        return $this;
-    }
-
-    public function showTags(bool $showTags = true): static
-    {
-        $this->showTags = $showTags;
 
         return $this;
     }
@@ -116,11 +107,6 @@ class SelectTree extends Field
     public function getAlwaysOpen(): bool
     {
         return $this->evaluate($this->alwaysOpen);
-    }
-
-    public function getShowTags(): bool
-    {
-        return $this->evaluate($this->showTags);
     }
 
     public function getDisabledBranchNode(): bool

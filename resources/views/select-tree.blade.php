@@ -22,7 +22,7 @@
                 disabled: '{{ $isDisabled() }}',
                 isSingleSelect: '{{ !$getMultiple() }}',
                 isIndependentNodes: '{{ $getIndependent() }}',
-                showTags: '{{ $getMultiple() && $getShowTags() }}',
+                showTags: '{{ $getMultiple() }}',
                 alwaysOpen: '{{ $getAlwaysOpen() }}',
                 clearable: '{{ $getClearable() }}',
             })"

@@ -13,7 +13,7 @@ export default function tree({
                                  showTags = true,
                                  clearable = true,
                                  isIndependentNodes = true,
-                                 alwaysOpen = false
+                                 alwaysOpen = false,
                              }) {
     return {
         state,
