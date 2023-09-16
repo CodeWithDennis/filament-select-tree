@@ -131,7 +131,7 @@ class SelectTree extends Field
             ->where($this->treeParentKey, $parent);
 
         // If not a root level query and a modification callback is provided, apply it.
-        if (!$parent && $this->modifyQueryUsing) {
+        if (! $parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
