@@ -2,9 +2,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev:styles": "postcss resources/css/tree.css -o resources/dist/tree.css --watch",
+        "dev:styles": "postcss resources/css/tree.css -o resources/dist/tree.css && postcss resources/css/custom.css -o resources/dist/custom.css --watch",
         "dev:scripts": "node bin/build.js --dev",
-        "build:styles": "postcss resources/css/tree.css -o resources/dist/tree.css",
+        "build:styles": "postcss resources/css/tree.css -o resources/dist/tree.css && postcss resources/css/custom.css -o resources/dist/custom.css",
         "build:scripts": "node bin/build.js",
         "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"

@@ -23,6 +23,8 @@ class FilamentSelectTreeServiceProvider extends PackageServiceProvider
         FilamentAsset::register([
             Css::make('tree', __DIR__.'/../resources/dist/tree.css')
                 ->loadedOnRequest(),
+            Css::make('custom', __DIR__.'/../resources/dist/custom.css')
+                ->loadedOnRequest(),
             AlpineComponent::make('tree', __DIR__.'/../resources/dist/tree.js')
                 ->loadedOnRequest(),
         ], 'codewithdennis/filament-select-tree');
