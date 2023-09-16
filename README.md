@@ -15,9 +15,12 @@ You can install the package via composer:
 composer require codewithdennis/filament-select-tree
 ```
 
-## Usage
+## Features
+- ✅ Compatible with dark mode
+- ✅ Featuring search functionality
+- ❌ Multi-select (Coming soon)
 
-At the moment, it only works with fields that accept single values.
+## Usage
 
 ```PHP
 use CodeWithDennis\FilamentSelectTree\SelectTree;
@@ -44,10 +47,6 @@ SelectTree::make('category_id')
     // The tree is disabled. (You can also use: ->disabledOn(''))
     ->disabled(),
 ```
-## Video
-
-https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/8d49374c-4cf4-4dfc-bddd-0e917518d1f1
-
 
 ## Changelog
 
