@@ -13,7 +13,8 @@ export default function tree({
                                  showTags = true,
                                  clearable = true,
                                  isIndependentNodes = true,
-                                 alwaysOpen = false
+                                 alwaysOpen = false,
+                                 tagsCountText
                              }) {
     return {
         state,
@@ -39,6 +40,7 @@ export default function tree({
                 clearable,
                 isIndependentNodes,
                 alwaysOpen,
+                tagsCountText,
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {

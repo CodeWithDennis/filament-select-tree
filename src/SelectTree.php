@@ -23,8 +23,6 @@ class SelectTree extends Field
 
     protected bool $alwaysOpen = false;
 
-    protected bool $showTags = true;
-
     protected bool $independent = true;
 
     protected bool $clearable = true;
@@ -56,13 +54,6 @@ class SelectTree extends Field
     public function independent(bool $independent = true): static
     {
         $this->independent = $independent;
-
-        return $this;
-    }
-
-    public function showTags(bool $showTags = true): static
-    {
-        $this->showTags = $showTags;
 
         return $this;
     }
@@ -118,11 +109,6 @@ class SelectTree extends Field
         return $this->evaluate($this->alwaysOpen);
     }
 
-    public function getShowTags(): bool
-    {
-        return $this->evaluate($this->showTags);
-    }
-
     public function getDisabledBranchNode(): bool
     {
         return $this->evaluate($this->disabledBranchNode);
@@ -145,7 +131,7 @@ class SelectTree extends Field
             ->where($this->treeParentKey, $parent);
 
         // If not a root level query and a modification callback is provided, apply it.
-        if (! $parent && $this->modifyQueryUsing) {
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
