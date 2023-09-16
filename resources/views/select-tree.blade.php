@@ -2,7 +2,10 @@
     <div
         wire:ignore
         x-data
-        x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree'))]"
+        x-load-css="[
+        @js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree')),
+        @js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filament-tree', package: 'codewithdennis/filament-select-tree')),
+        ]"
     >
         <div
             x-ignore
