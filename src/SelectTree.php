@@ -16,16 +16,27 @@ class SelectTree extends Field
     use HasPlaceholder;
 
     protected string $view = 'select-tree::select-tree';
+
     protected bool $withCount = false;
+
     protected bool $multiple = false;
+
     protected bool $alwaysOpen = false;
+
     protected bool $showTags = true;
+
     protected bool $independent = true;
+
     protected bool $clearable = true;
+
     protected bool $disabledBranchNode = false;
+
     protected string $treeModel;
+
     protected string $treeParentKey;
+
     protected string $titleAttribute;
+
     protected ?Closure $modifyQueryUsing;
 
     public function withCount(bool $withCount = true): static
