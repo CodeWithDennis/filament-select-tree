@@ -47,6 +47,8 @@ SelectTree::make('category_id')
 ->disabledBranchNode()
 ```
 
+![disabledBranchNode](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/94de4d96-5f39-4633-8fdf-73156362d363)
+
 ```PHP
 // Show the count of children alongside the group's name.
 ->withCount()
@@ -73,15 +75,21 @@ SelectTree::make('category_id')
 ->clearable(false)
 ```
 
+![clearable](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/c7499110-86a7-4177-8853-c21739473c77)
+
 ```php
 // Enable the option to save multiple values as a string (comma-separated)
 ->multiple()
 ```
 
+![multiple](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/6970676d-1c8e-48fd-8af3-4301a984b976)
+
 ```PHP
 // Activates the search functionality for the SelectTree.
 ->searchable()
 ```
+
+![searchable](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/5dbab5cb-a895-4f6a-af7c-16520400a902)
 
 ```PHP
 // The tree is disabled. (You can also use: ->disabledOn(''))
