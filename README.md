@@ -55,12 +55,6 @@ SelectTree::make('category_id')
 ```
 
 ```PHP
-// To disable tags and display a text message instead (e.g., "X items have been selected")
-// Tags is always disabled on single select
-->disableTags()
-```
-
-```PHP
 // To keep the dropdown open at all times
 ->alwaysOpen()
 ```
