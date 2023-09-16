@@ -21,7 +21,7 @@ export default function tree({
         init() {
             const values = this.isSingleSelect
                 ? (this.state !== null ? this.state : '')
-                : (this.state !== null ? this.state.split(',').map(Number) : '');
+                : (this.state !== null ? this.state.split(',') : '');
 
             this.tree = new Treeselect({
                 id: `tree-${name}-id`,

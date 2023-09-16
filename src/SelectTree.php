@@ -147,7 +147,7 @@ class SelectTree extends Field
             // Create an array representation of the current result with children.
             return [
                 'name' => $result->{$this->titleAttribute},
-                'value' => $result->id,
+                'value' => $this->getMultiple() ? $result->{$this->titleAttribute} : $result->id,
                 'children' => $children->isEmpty() ? null : $children->toArray(),
             ];
         });
