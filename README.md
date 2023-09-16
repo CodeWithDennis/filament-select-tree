@@ -19,7 +19,8 @@ composer require codewithdennis/filament-select-tree
 - ✅ Compatible with dark mode
 - ✅ Featuring search functionality
 - ❌ Multi-select (Coming soon)
-
+- ❌ Relationships
+  
 ## Usage
 
 ```PHP
