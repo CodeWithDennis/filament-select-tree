@@ -174,7 +174,7 @@ class SelectTree extends Field
         }
 
         // Check if the treeModel is not set; if yes, return an empty collection.
-        if (!$this->treeModel) {
+        if (! $this->treeModel) {
             return collect();
         }
 
@@ -183,7 +183,7 @@ class SelectTree extends Field
             ->where($this->treeParentKey, $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it.
-        if (!$parent && $this->modifyQueryUsing) {
+        if (! $parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
