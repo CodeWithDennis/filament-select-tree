@@ -37,6 +37,9 @@ SelectTree::make('category_id')
 
     // Ensures that only leaf nodes can be selected while preventing the selection of groups.
     ->disabledBranchNode()
+    
+    // Adjust the emptyLabel for when there are zero search results.
+    ->emptyLabel(__('No results found'))
 
     // Show the count of children alongside the group's name.
     ->withCount()
