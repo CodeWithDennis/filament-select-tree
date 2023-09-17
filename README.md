@@ -52,7 +52,7 @@ SelectTree::make('category_id')
     // By default, all nodes are independent.
     ->independent(false)
     
-    // The tree will open with the selected values by default (only works if independent is false)
+    // When 'independent' is set to false, the tree will open with the selected values by default.
     ->expandSelected(false)
 
     // By default, the clearable icon is enabled, but you can hide it with:
