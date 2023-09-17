@@ -14,7 +14,8 @@ export default function tree({
                                  clearable = true,
                                  isIndependentNodes = true,
                                  alwaysOpen = false,
-                                 emptyText
+                                 emptyText,
+                                 expandSelected = true
                              }) {
     return {
         state,
@@ -40,7 +41,8 @@ export default function tree({
                 clearable,
                 isIndependentNodes,
                 alwaysOpen,
-                emptyText
+                emptyText,
+                expandSelected
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {
