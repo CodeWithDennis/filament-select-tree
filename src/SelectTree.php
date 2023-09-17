@@ -33,6 +33,8 @@ class SelectTree extends Field
 
     protected bool $disabledBranchNode = false;
 
+    protected bool $grouped = true;
+
     protected ?string $treeModel = null;
 
     protected array $options = [];
@@ -53,6 +55,13 @@ class SelectTree extends Field
     public function clearable(bool $clearable = true): static
     {
         $this->clearable = $clearable;
+
+        return $this;
+    }
+
+    public function grouped(bool $grouped = true): static
+    {
+        $this->grouped = $grouped;
 
         return $this;
     }
@@ -114,6 +123,11 @@ class SelectTree extends Field
     public function getExpandSelected(): bool
     {
         return $this->evaluate($this->expandSelected);
+    }
+
+    public function getGrouped(): bool
+    {
+        return $this->evaluate($this->grouped);
     }
 
     public function getIndependent(): bool
