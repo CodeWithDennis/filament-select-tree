@@ -5,7 +5,8 @@
 
 The multi-level select field lets you pick one option at a time from a list that's neatly organized into different levels. It's all made possible with [TreeSelectJS](https://github.com/dipson88/treeselectjs).
 
-![Filament Select Tree (1)](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/a589af66-d314-4cf2-9cea-d155e52d4bca)
+![Select Tree](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/d944b896-134b-414a-b654-9adecc43ba5e)
+
 
 ## Installation
 
