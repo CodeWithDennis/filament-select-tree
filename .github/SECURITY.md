@@ -1,3 +1,3 @@
 # Security Policy
 
-If you discover any security related issues, please create a issue.
+If you come across any security-related issues, kindly open an issue.
