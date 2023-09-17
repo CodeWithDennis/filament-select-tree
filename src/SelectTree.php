@@ -23,6 +23,8 @@ class SelectTree extends Field
 
     protected bool $alwaysOpen = false;
 
+    protected string $emptyLabel;
+
     protected bool $independent = true;
 
     protected bool $clearable = true;
@@ -49,6 +51,13 @@ class SelectTree extends Field
     public function clearable(bool $clearable = true): static
     {
         $this->clearable = $clearable;
+
+        return $this;
+    }
+
+    public function emptyLabel(string $emptyLabel): static
+    {
+        $this->emptyLabel = $emptyLabel;
 
         return $this;
     }
@@ -126,6 +135,11 @@ class SelectTree extends Field
     public function getDisabledBranchNode(): bool
     {
         return $this->evaluate($this->disabledBranchNode);
+    }
+
+    public function getEmptyLabel(): string
+    {
+        return $this->evaluate($this->emptyLabel);
     }
 
     public function tree(string $treeModel, string $treeParentKey, string $titleAttribute, Closure $modifyQueryUsing = null): static
