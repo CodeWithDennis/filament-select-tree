@@ -20,7 +20,7 @@ export default function tree({
         state,
         tree: null,
         init() {
-            const values = this.isSingleSelect
+            const values = isSingleSelect
                 ? (this.state !== null ? this.state : '')
                 : (this.state !== null ? this.state.split(',') : '');
 
