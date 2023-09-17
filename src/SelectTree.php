@@ -29,7 +29,9 @@ class SelectTree extends Field
 
     protected bool $disabledBranchNode = false;
 
-    protected string $treeModel;
+    protected ?string $treeModel = null;
+
+    protected array $options = [];
 
     protected string $treeParentKey;
 
@@ -72,6 +74,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function options(array $options): static
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
     public function disabledBranchNode(bool $disabledBranchNode = true): static
     {
         $this->disabledBranchNode = $disabledBranchNode;
@@ -79,7 +88,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function getTree(): Collection
+    public function getTree(): Collection|array
     {
         return $this->evaluate($this->buildTree());
     }
@@ -109,6 +118,11 @@ class SelectTree extends Field
         return $this->evaluate($this->alwaysOpen);
     }
 
+    public function getOptions(): array
+    {
+        return $this->evaluate($this->options);
+    }
+
     public function getDisabledBranchNode(): bool
     {
         return $this->evaluate($this->disabledBranchNode);
@@ -124,14 +138,24 @@ class SelectTree extends Field
         return $this;
     }
 
-    private function buildTree(int $parent = null): Collection
+    private function buildTree(int $parent = null): array|Collection
     {
+        // Check if custom options are set; if yes, return them.
+        if ($this->getOptions()) {
+            return $this->getOptions();
+        }
+
+        // Check if the treeModel is not set; if yes, return an empty collection.
+        if (!$this->treeModel) {
+            return collect();
+        }
+
         // Create a default query to fetch items with the specified parent ID.
         $defaultQuery = $this->treeModel::query()
             ->where($this->treeParentKey, $parent);
 
-        // If not a root level query and a modification callback is provided, apply it.
-        if (! $parent && $this->modifyQueryUsing) {
+        // If we're not at the root level and a modification callback is provided, apply it.
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -152,4 +176,5 @@ class SelectTree extends Field
             ];
         });
     }
+
 }
