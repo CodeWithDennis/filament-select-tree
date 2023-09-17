@@ -19,6 +19,8 @@ composer require codewithdennis/filament-select-tree
 - ✅ Compatible with dark mode
 - ✅ Featuring search functionality
 - ✅ Comma seperated multi-select
+- ✅ Custom options
+- ❌ Disabled options (Planned)
 - ❌ Relationships (Planned)
   
 ## Usage
@@ -54,9 +56,31 @@ SelectTree::make('category_id')
     // Activates the search functionality for the SelectTree.
     ->searchable()
 ```
+### Custom
+If you prefer to create custom options rather than utilizing a pre-existing model, you can achieve this using the following example:
+
+```PHP
+->options([
+    [
+        'name' => 'Electronics',
+        'value' => 'electronics',
+        'children' => [
+            [
+                'name' => 'Mobile Devices',
+                'value' => 'mobile devices',
+                'children' => [
+                    [
+                        'name' => 'Apple Products',
+                        'value' => 'apple products',
+                    ]
+                ]
+            ]
+        ]
+    ],
+])
+```
 
 ## Changelog
-
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
 ## Contributing
