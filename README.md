@@ -83,6 +83,11 @@ If you prefer to create custom options rather than utilizing a pre-existing mode
 ])
 ```
 
+## Screenshots
+
+<img width="625" alt="Scherm­afbeelding 2023-09-17 om 12 19 13" src="https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/7f2611f3-60c7-43e4-b4a1-02646eeab0c9">
+<img width="627" alt="Scherm­afbeelding 2023-09-17 om 12 19 05" src="https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/0ecc74bd-0f67-48e3-ace6-591ddd32b835">
+
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
 
