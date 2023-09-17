@@ -13,6 +13,7 @@ You can install the package via composer:
 
 ```bash
 composer require codewithdennis/filament-select-tree
+php artisan filament:assets
 ```
 
 ## Features
