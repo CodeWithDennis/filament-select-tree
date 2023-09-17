@@ -26,7 +26,8 @@
                 alwaysOpen: '{{ $getAlwaysOpen() }}',
                 clearable: '{{ $getClearable() }}',
                 emptyText: '{{ $getEmptyLabel() }}',
-                expandSelected: '{{ $getExpandSelected() }}'
+                expandSelected: '{{ $getExpandSelected() }}',
+                grouped: '{{ $getGrouped() }}',
             })"
         >
             <div x-ref="tree"></div>

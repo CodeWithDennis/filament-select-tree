@@ -54,6 +54,9 @@ SelectTree::make('category_id')
     
     // When 'independent' is set to false, the tree will open with the selected values by default.
     ->expandSelected(false)
+    
+    // Display individual leaf nodes instead of the main group when all leaf nodes are selected.
+    ->grouped(false)
 
     // By default, the clearable icon is enabled, but you can hide it with:
     ->clearable(false)
