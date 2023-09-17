@@ -24,62 +24,35 @@ composer require codewithdennis/filament-select-tree
 ## Usage
 
 ```PHP
-// Required to build a tree
 SelectTree::make('category_id')
     // Creates a select tree with 'Category' model, using 'category_id' as parent and 'name' as label, allowing custom query modification.
     ->tree(Category::class, 'category_id', 'name', function ($query) {
         return $query;
     })
-```
 
-```PHP
-// The label 'Category' is assigned to the field.
-->label(__('Category'))
-```
+    // Set a custom placeholder for when no items are selected
+    ->placeholder(__('Your custom placeholder here'))
 
-```PHP
-// Set a custom placeholder for when no items are selected
-->placeholder(__('Your custom placeholder here'))
-```
+    // Ensures that only leaf nodes can be selected while preventing the selection of groups.
+    ->disabledBranchNode()
 
-```PHP
-// Ensures that only leaf nodes can be selected while preventing the selection of groups.
-->disabledBranchNode()
-```
+    // Show the count of children alongside the group's name.
+    ->withCount()
 
-```PHP
-// Show the count of children alongside the group's name.
-->withCount()
-```
+    // To keep the dropdown open at all times
+    ->alwaysOpen()
 
-```PHP
-// To keep the dropdown open at all times
-->alwaysOpen()
-```
+    // By default, all nodes are independent.
+    ->independent(false)
 
-```PHP
-// By default, all nodes are independent.
-->independent(false)
-```
+    // By default, the clearable icon is enabled, but you can hide it with:
+    ->clearable(false)
 
-```php
-// By default, the clearable icon is enabled, but you can hide it with:
-->clearable(false)
-```
+    // Enable the option to save multiple values as a string (comma-separated)
+    ->multiple()
 
-```php
-// Enable the option to save multiple values as a string (comma-separated)
-->multiple()
-```
-
-```PHP
-// Activates the search functionality for the SelectTree.
-->searchable()
-```
-
-```PHP
-// The tree is disabled. (You can also use: ->disabledOn(''))
-->disabled(),
+    // Activates the search functionality for the SelectTree.
+    ->searchable()
 ```
 
 ## Changelog
