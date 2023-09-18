@@ -23,7 +23,7 @@ class SelectTree extends Field
 
     protected bool $alwaysOpen = false;
 
-    protected string $emptyLabel;
+    protected string $emptyLabel = '';
 
     protected bool $independent = true;
 
@@ -167,7 +167,7 @@ class SelectTree extends Field
 
     public function getEmptyLabel(): string
     {
-        return $this->evaluate($this->emptyLabel);
+        return !$this->emptyLabel ? __('No results found') : $this->evaluate($this->emptyLabel);
     }
 
     public function tree(string $treeModel, string $treeParentKey, string $titleAttribute, Closure $modifyQueryUsing = null): static
@@ -188,7 +188,7 @@ class SelectTree extends Field
         }
 
         // Check if the treeModel is not set; if yes, return an empty collection.
-        if (! $this->treeModel) {
+        if (!$this->treeModel) {
             return collect();
         }
 
@@ -197,7 +197,7 @@ class SelectTree extends Field
             ->where($this->treeParentKey, $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it.
-        if (! $parent && $this->modifyQueryUsing) {
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
