@@ -18,11 +18,10 @@ php artisan filament:assets
 ```
 
 ## Features
-- ✅ Compatible with dark mode
-- ✅ Featuring search functionality
-- ✅ Custom options
-- ✅ Works with `BelongsTo` (single) and `BelongsToMany` (multiple)
-- ❌ Comma seperated multi-select
+- ✅ Dark mode
+- ✅ Search
+- ✅ `BelongsTo` support
+- ✅ `BelongsToMany` support
 - ❌ Disabled options (Planned)
   
 ## Usage
