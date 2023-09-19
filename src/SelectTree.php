@@ -7,7 +7,6 @@ use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
-use Illuminate\Database\Eloquent\Concerns\HasRelationships;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -17,7 +16,6 @@ class SelectTree extends Field
     use CanBeDisabled;
     use CanBeSearchable;
     use HasPlaceholder;
-    use HasRelationships;
 
     protected string $view = 'select-tree::select-tree';
 

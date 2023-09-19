@@ -39,7 +39,7 @@ SelectTree::make('category_id')
     // Set a custom placeholder for when no items are selected
     ->placeholder(__('Your custom placeholder here'))
 
-    // Enabled the selection of groups.
+    // Enables the selection of groups.
     ->enableBranchNode()
     
     // Adjust the emptyLabel for when there are zero search results.
