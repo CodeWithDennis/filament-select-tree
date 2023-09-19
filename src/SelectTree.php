@@ -71,9 +71,6 @@ class SelectTree extends Field
 
                 // Sync the relationship with the provided state (IDs).
                 $component->getRelationship()->sync($state->toArray());
-
-                // Set the component as not dehydrated (assuming this is related to the framework's functionality).
-                $component->dehydrated(false);
             }
         });
     }
@@ -96,7 +93,9 @@ class SelectTree extends Field
         }
 
         // Create a default query to retrieve related items.
-        $defaultQuery = $this->getRelationship()->getRelated()->query()
+        $defaultQuery = $this->getRelationship()
+            ->getRelated()
+            ->query()
             ->where($key, $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
