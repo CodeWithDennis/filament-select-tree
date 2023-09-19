@@ -47,62 +47,71 @@ class SelectTree extends Field
 
     protected ?Closure $modifyQueryUsing;
 
-    public function withCount(bool $withCount = true): static
-    {
-        $this->withCount = $withCount;
-
-        return $this;
-    }
-
     protected function setUp(): void
     {
-        $this->relationship = $this->getName();
-
+        // Load the state from relationships using a callback function.
         $this->loadStateFromRelationshipsUsing(static function (self $component): void {
+            // Get the current relationship associated with the component.
             $relationship = $component->getRelationship();
-            if ($relationship instanceof BelongsTo) {
-                $component->state($relationship->getResults()?->getKey());
-            } else {
-                $results = $relationship->getResults();
-                $state = $results
+
+            // Check if the relationship is a BelongsToMany relationship.
+            if ($relationship instanceof BelongsToMany) {
+                // Retrieve related model instances and extract their IDs into an array.
+                $state = $relationship->getResults()
                     ->pluck($relationship->getRelatedKeyName())
                     ->toArray();
+
+                // Set the component's state with the extracted IDs.
                 $component->state($state);
             }
         });
 
+        // Save relationships using a callback function.
         $this->saveRelationshipsUsing(static function (self $component, $state) {
+            // Check if the component's relationship is a BelongsToMany relationship.
             if ($component->getRelationship() instanceof BelongsToMany) {
+                // Wrap the state in a collection and convert it to an array if it's not set.
                 $state = Collection::wrap($state ?? []);
+
+                // Sync the relationship with the provided state (IDs).
                 $component->getRelationship()->sync($state->toArray());
+
+                // Set the component as not dehydrated (assuming this is related to the framework's functionality).
                 $component->dehydrated(false);
             }
         });
-
     }
 
     private function buildTree(int $parent = null): array|Collection
     {
-
+        // Check if options have already been set, if so, return them.
         if ($this->getOptions()) {
             return $this->getOptions();
         }
 
+        // Determine the foreign key based on the type of relationship.
         if ($this->getRelationship() instanceof BelongsTo) {
             $key = $this->getRelationship()->getForeignKeyName();
         }
 
+        // Determine the related pivot key for BelongsToMany relationships.
         if ($this->getRelationship() instanceof BelongsToMany) {
             $key = $this->getRelationship()->getRelatedPivotKeyName();
         }
 
+        // If the key is not set, return an empty array.
+        if (!isset($key)) {
+            return [];
+        }
+
+        // Create a default query to retrieve related items.
         $defaultQuery = $this->getRelationship()->getRelated()->query()
             ->where($key, $parent);
 
-        //        // If we're not at the root level and a modification callback is provided, apply it.
-        //        if (!$parent && $this->modifyQueryUsing) {
-        //            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
-        //        }
+        // If we're not at the root level and a modification callback is provided, apply it to the query.
+        if (!$parent && $this->modifyQueryUsing) {
+            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
+        }
 
         // Fetch the results from the default query.
         $results = $defaultQuery->get();
@@ -115,17 +124,25 @@ class SelectTree extends Field
 
             // Create an array representation of the current result with children.
             return [
-                'name' => $result->name,
+                'name' => $result->{$this->getTitleAttribute()},
                 'value' => $result->id,
                 'children' => $children->isEmpty() ? null : $children->toArray(),
             ];
         });
     }
 
-    public function relationship(string $relationship, string $titleAttribute): self
+    public function relationship(string $relationship, string $titleAttribute, ?Closure $modifyQueryUsing = null): self
     {
         $this->relationship = $relationship;
         $this->titleAttribute = $titleAttribute;
+        $this->modifyQueryUsing = $modifyQueryUsing;
+
+        return $this;
+    }
+
+    public function withCount(bool $withCount = true): static
+    {
+        $this->withCount = $withCount;
 
         return $this;
     }

@@ -24,7 +24,7 @@
                 isIndependentNodes: '{{ $getIndependent() }}',
                 showTags: '{{ $getMultiple() }}',
                 alwaysOpen: '{{ $getAlwaysOpen() }}',
-                clearable: '{{ $getClearable() }}',
+                clearable: true,
                 emptyText: '{{ $getEmptyLabel() }}',
                 expandSelected: '{{ $getExpandSelected() }}',
                 grouped: '{{ $getGrouped() }}',
