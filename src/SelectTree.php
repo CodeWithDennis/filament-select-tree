@@ -14,10 +14,10 @@ use Illuminate\Support\Collection;
 
 class SelectTree extends Field
 {
-    use HasRelationships;
     use CanBeDisabled;
     use CanBeSearchable;
     use HasPlaceholder;
+    use HasRelationships;
 
     protected string $view = 'select-tree::select-tree';
 
@@ -99,10 +99,10 @@ class SelectTree extends Field
         $defaultQuery = $this->getRelationship()->getRelated()->query()
             ->where($key, $parent);
 
-//        // If we're not at the root level and a modification callback is provided, apply it.
-//        if (!$parent && $this->modifyQueryUsing) {
-//            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
-//        }
+        //        // If we're not at the root level and a modification callback is provided, apply it.
+        //        if (!$parent && $this->modifyQueryUsing) {
+        //            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
+        //        }
 
         // Fetch the results from the default query.
         $results = $defaultQuery->get();
