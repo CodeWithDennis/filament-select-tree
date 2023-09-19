@@ -20,25 +20,27 @@ php artisan filament:assets
 ## Features
 - ✅ Compatible with dark mode
 - ✅ Featuring search functionality
-- ✅ Comma seperated multi-select
 - ✅ Custom options
+- ✅ Works with `BelongsTo` (single) and `BelongsToMany` (multiple)
+- ❌ Comma seperated multi-select
 - ❌ Disabled options (Planned)
-- ❌ Relationships (Planned)
   
 ## Usage
 
 ```PHP
 SelectTree::make('category_id')
-    // Creates a select tree with 'Category' model, using 'category_id' as parent and 'name' as label, allowing custom query modification.
-    ->tree(Category::class, 'category_id', 'name', function ($query) {
-        return $query;
-    })
 
+    // Create a tree based on a `BelongsToMany` relationship
+    ->relationship('categories', 'name', fn($query) => $query),
+
+    // Create a tree based on a `BelongsTo` relationship
+    ->relationship('category', 'name', fn($query) => $query),
+    
     // Set a custom placeholder for when no items are selected
     ->placeholder(__('Your custom placeholder here'))
 
-    // Ensures that only leaf nodes can be selected while preventing the selection of groups.
-    ->disabledBranchNode()
+    // Enabled the selection of groups.
+    ->enableBranchNode()
     
     // Adjust the emptyLabel for when there are zero search results.
     ->emptyLabel(__('No results found'))
@@ -66,6 +68,20 @@ SelectTree::make('category_id')
 
     // Activates the search functionality for the SelectTree.
     ->searchable()
+```
+### Relationships (examples)
+
+```PHP
+public function category(): BelongsTo
+{
+    return $this->belongsTo(Category::class);
+}
+```
+```PHP
+public function categories(): belongsToMany
+{
+    return $this->belongsToMany(Category::class);
+}
 ```
 ### Custom
 If you prefer to create custom options rather than utilizing a pre-existing model, you can achieve this using the following example:

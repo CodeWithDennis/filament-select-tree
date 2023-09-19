@@ -41,8 +41,6 @@ class SelectTree extends Field
 
     protected bool $grouped = true;
 
-    protected array $options = [];
-
     protected string|Closure $relationship;
 
     protected ?Closure $modifyQueryUsing;
@@ -84,11 +82,6 @@ class SelectTree extends Field
 
     private function buildTree(int $parent = null): array|Collection
     {
-        // Check if options have already been set, if so, return them.
-        if ($this->getOptions()) {
-            return $this->getOptions();
-        }
-
         // Determine the foreign key based on the type of relationship.
         if ($this->getRelationship() instanceof BelongsTo) {
             $key = $this->getRelationship()->getForeignKeyName();
@@ -199,13 +192,6 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function options(array $options): static
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
     public function enableBranchNode(bool $enableBranchNode = true): static
     {
         $this->enableBranchNode = $enableBranchNode;
@@ -251,11 +237,6 @@ class SelectTree extends Field
     public function getAlwaysOpen(): bool
     {
         return $this->evaluate($this->alwaysOpen);
-    }
-
-    public function getOptions(): array
-    {
-        return $this->evaluate($this->options);
     }
 
     public function getEnableBranchNode(): bool
