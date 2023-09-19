@@ -100,7 +100,7 @@ class SelectTree extends Field
         }
 
         // If the key is not set, return an empty array.
-        if (!isset($key)) {
+        if (! isset($key)) {
             return [];
         }
 
@@ -109,7 +109,7 @@ class SelectTree extends Field
             ->where($key, $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (!$parent && $this->modifyQueryUsing) {
+        if (! $parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -131,7 +131,7 @@ class SelectTree extends Field
         });
     }
 
-    public function relationship(string $relationship, string $titleAttribute, ?Closure $modifyQueryUsing = null): self
+    public function relationship(string $relationship, string $titleAttribute, Closure $modifyQueryUsing = null): self
     {
         $this->relationship = $relationship;
         $this->titleAttribute = $titleAttribute;
