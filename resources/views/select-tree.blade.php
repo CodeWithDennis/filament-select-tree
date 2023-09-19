@@ -18,7 +18,7 @@
                 searchable: '{{ $isSearchable() }}',
                 showCount: '{{ $getWithCount() }}',
                 placeholder: '{{ $getPlaceholder() }}',
-                disabledBranchNode: '{{ $getDisabledBranchNode() }}',
+                disabledBranchNode: '{{ !$getEnableBranchNode() }}',
                 disabled: '{{ $isDisabled() }}',
                 isSingleSelect: '{{ !$getMultiple() }}',
                 isIndependentNodes: '{{ $getIndependent() }}',
