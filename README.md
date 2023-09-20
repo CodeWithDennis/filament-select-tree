@@ -59,7 +59,7 @@ SelectTree::make('category_id')
 // Set nodes as dependent
 ->independent(false)
 
-// Expand the tree with selected values by default
+// Expand the tree with selected values
 ->expandSelected(false)
 
 // Display individual leaf nodes instead of the main group when all leaf nodes are selected
@@ -67,9 +67,6 @@ SelectTree::make('category_id')
 
 // Hide the clearable icon
 ->clearable(false)
-
-// Enable the option to save multiple values as a string (comma-separated)
-->multiple()
 
 // Activate the search functionality for the SelectTree
 ->searchable();
