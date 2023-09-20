@@ -7,6 +7,8 @@ use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
 
 class SelectTree extends Field
@@ -27,29 +29,115 @@ class SelectTree extends Field
 
     protected bool $independent = true;
 
+    protected string $titleAttribute;
+
+    protected string $parentAttribute;
+
     protected bool $clearable = true;
 
     protected bool $expandSelected = true;
 
-    protected bool $disabledBranchNode = false;
+    protected bool $enableBranchNode = false;
 
     protected bool $grouped = true;
 
-    protected ?string $treeModel = null;
-
-    protected array $options = [];
-
-    protected string $treeParentKey;
-
-    protected string $titleAttribute;
+    protected string|Closure $relationship;
 
     protected ?Closure $modifyQueryUsing;
+
+    protected function setUp(): void
+    {
+        // Load the state from relationships using a callback function.
+        $this->loadStateFromRelationshipsUsing(static function (self $component): void {
+            // Get the current relationship associated with the component.
+            $relationship = $component->getRelationship();
+
+            // Check if the relationship is a BelongsToMany relationship.
+            if ($relationship instanceof BelongsToMany) {
+                // Retrieve related model instances and extract their IDs into an array.
+                $state = $relationship->getResults()
+                    ->pluck($relationship->getRelatedKeyName())
+                    ->toArray();
+
+                // Set the component's state with the extracted IDs.
+                $component->state($state);
+            }
+        });
+
+        // Save relationships using a callback function.
+        $this->saveRelationshipsUsing(static function (self $component, $state) {
+            // Check if the component's relationship is a BelongsToMany relationship.
+            if ($component->getRelationship() instanceof BelongsToMany) {
+                // Wrap the state in a collection and convert it to an array if it's not set.
+                $state = Collection::wrap($state ?? []);
+
+                // Sync the relationship with the provided state (IDs).
+                $component->getRelationship()->sync($state->toArray());
+            }
+        });
+    }
+
+    private function buildTree(int $parent = null): array|Collection
+    {
+        // Create a default query to retrieve related items.
+        $defaultQuery = $this->getRelationship()
+            ->getRelated()
+            ->query()
+            ->where($this->getParentAttribute(), $parent);
+
+        // If we're not at the root level and a modification callback is provided, apply it to the query.
+        if (! $parent && $this->modifyQueryUsing) {
+            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
+        }
+
+        // Fetch the results from the default query.
+        $results = $defaultQuery->get();
+
+        // Map the results into a tree structure.
+        return $results->map(function ($result) {
+
+            // Recursively build children trees for the current result.
+            $children = $this->buildTree($result->id);
+
+            // Create an array representation of the current result with children.
+            return [
+                'name' => $result->{$this->getTitleAttribute()},
+                'value' => $result->id,
+                'children' => $children->isEmpty() ? null : $children->toArray(),
+            ];
+        });
+    }
+
+    public function relationship(string $relationship, string $titleAttribute, string $parentAttribute, Closure $modifyQueryUsing = null): self
+    {
+        $this->relationship = $relationship;
+        $this->titleAttribute = $titleAttribute;
+        $this->parentAttribute = $parentAttribute;
+        $this->modifyQueryUsing = $modifyQueryUsing;
+
+        return $this;
+    }
 
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
 
         return $this;
+    }
+
+    public function getRelationship(): BelongsToMany|BelongsTo
+    {
+        return $this->getModelInstance()->{$this->evaluate($this->relationship)}();
+    }
+
+    public function getTitleAttribute(): string
+    {
+        return $this->evaluate($this->titleAttribute);
+    }
+
+    public function getParentAttribute(): string
+    {
+        return $this->evaluate($this->parentAttribute);
     }
 
     public function clearable(bool $clearable = true): static
@@ -94,23 +182,9 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function multiple(bool $multiple = true): static
+    public function enableBranchNode(bool $enableBranchNode = true): static
     {
-        $this->multiple = $multiple;
-
-        return $this;
-    }
-
-    public function options(array $options): static
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    public function disabledBranchNode(bool $disabledBranchNode = true): static
-    {
-        $this->disabledBranchNode = $disabledBranchNode;
+        $this->enableBranchNode = $enableBranchNode;
 
         return $this;
     }
@@ -142,7 +216,7 @@ class SelectTree extends Field
 
     public function getMultiple(): bool
     {
-        return $this->evaluate($this->multiple);
+        return $this->evaluate($this->getRelationship() instanceof BelongsToMany);
     }
 
     public function getClearable(): bool
@@ -155,67 +229,13 @@ class SelectTree extends Field
         return $this->evaluate($this->alwaysOpen);
     }
 
-    public function getOptions(): array
+    public function getEnableBranchNode(): bool
     {
-        return $this->evaluate($this->options);
-    }
-
-    public function getDisabledBranchNode(): bool
-    {
-        return $this->evaluate($this->disabledBranchNode);
+        return $this->evaluate($this->enableBranchNode);
     }
 
     public function getEmptyLabel(): string
     {
-        return ! $this->emptyLabel ? __('No results found') : $this->evaluate($this->emptyLabel);
-    }
-
-    public function tree(string $treeModel, string $treeParentKey, string $titleAttribute, Closure $modifyQueryUsing = null): static
-    {
-        $this->treeModel = $treeModel;
-        $this->treeParentKey = $treeParentKey;
-        $this->titleAttribute = $titleAttribute;
-        $this->modifyQueryUsing = $modifyQueryUsing;
-
-        return $this;
-    }
-
-    private function buildTree(int $parent = null): array|Collection
-    {
-        // Check if custom options are set; if yes, return them.
-        if ($this->getOptions()) {
-            return $this->getOptions();
-        }
-
-        // Check if the treeModel is not set; if yes, return an empty collection.
-        if (! $this->treeModel) {
-            return collect();
-        }
-
-        // Create a default query to fetch items with the specified parent ID.
-        $defaultQuery = $this->treeModel::query()
-            ->where($this->treeParentKey, $parent);
-
-        // If we're not at the root level and a modification callback is provided, apply it.
-        if (! $parent && $this->modifyQueryUsing) {
-            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
-        }
-
-        // Fetch the results from the default query.
-        $results = $defaultQuery->get();
-
-        // Map the results into a tree structure.
-        return $results->map(function ($result) {
-
-            // Recursively build children trees for the current result.
-            $children = $this->buildTree($result->id);
-
-            // Create an array representation of the current result with children.
-            return [
-                'name' => $result->{$this->titleAttribute},
-                'value' => $this->getMultiple() ? $result->{$this->titleAttribute} : $result->id,
-                'children' => $children->isEmpty() ? null : $children->toArray(),
-            ];
-        });
+        return $this->emptyLabel ? $this->evaluate($this->emptyLabel) : __('No results found');
     }
 }

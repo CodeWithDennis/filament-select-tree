@@ -212,7 +212,6 @@ html.dark .treeselect-input__tags-element:hover svg {
 }
 
 .treeselect-input__clear svg {
-    stroke: rgb(255 255 255/var(--tw-text-opacity));
     opacity: 0.5;
 }
 
