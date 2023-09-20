@@ -31,6 +31,8 @@ class SelectTree extends Field
 
     protected string $titleAttribute;
 
+    protected string $parentAttribute;
+
     protected bool $clearable = true;
 
     protected bool $expandSelected = true;
@@ -77,29 +79,14 @@ class SelectTree extends Field
 
     private function buildTree(int $parent = null): array|Collection
     {
-        // Determine the foreign key based on the type of relationship.
-        if ($this->getRelationship() instanceof BelongsTo) {
-            $key = $this->getRelationship()->getForeignKeyName();
-        }
-
-        // Determine the related pivot key for BelongsToMany relationships.
-        if ($this->getRelationship() instanceof BelongsToMany) {
-            $key = $this->getRelationship()->getRelatedPivotKeyName();
-        }
-
-        // If the key is not set, return an empty array.
-        if (! isset($key)) {
-            return [];
-        }
-
         // Create a default query to retrieve related items.
         $defaultQuery = $this->getRelationship()
             ->getRelated()
             ->query()
-            ->where($key, $parent);
+            ->where($this->getParentAttribute(), $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (! $parent && $this->modifyQueryUsing) {
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -121,10 +108,11 @@ class SelectTree extends Field
         });
     }
 
-    public function relationship(string $relationship, string $titleAttribute, Closure $modifyQueryUsing = null): self
+    public function relationship(string $relationship, string $titleAttribute, string $parentAttribute, Closure $modifyQueryUsing = null): self
     {
         $this->relationship = $relationship;
         $this->titleAttribute = $titleAttribute;
+        $this->parentAttribute = $parentAttribute;
         $this->modifyQueryUsing = $modifyQueryUsing;
 
         return $this;
@@ -145,6 +133,11 @@ class SelectTree extends Field
     public function getTitleAttribute(): string
     {
         return $this->evaluate($this->titleAttribute);
+    }
+
+    public function getParentAttribute(): string
+    {
+        return $this->evaluate($this->parentAttribute);
     }
 
     public function clearable(bool $clearable = true): static

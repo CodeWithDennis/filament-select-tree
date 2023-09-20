@@ -31,13 +31,13 @@ php artisan filament:assets
 ```PHP
 // Create a tree based on a 'BelongsToMany' relationship
 SelectTree::make('categories')
-    ->relationship('categories', 'name', function ($query) {
+    ->relationship('categories', 'name', 'parent_id', function ($query) {
         return $query;
     })
 
 // Create a tree based on a 'BelongsTo' relationship
 SelectTree::make('category_id')
-    ->relationship('category', 'name', function ($query) {
+    ->relationship('category', 'name', 'parent_id', function ($query) {
         return $query;
     })
 
