@@ -45,7 +45,7 @@ class SelectTree extends Field
 
     protected ?Closure $modifyQueryUsing;
 
-    protected Closure | int $defaultOpenLevel;
+    protected Closure|int $defaultOpenLevel;
 
     protected function setUp(): void
     {
@@ -156,7 +156,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function defaultOpenLevel(Closure | int $defaultOpenLevel = 0): static
+    public function defaultOpenLevel(Closure|int $defaultOpenLevel = 0): static
     {
         $this->defaultOpenLevel = $defaultOpenLevel;
 
