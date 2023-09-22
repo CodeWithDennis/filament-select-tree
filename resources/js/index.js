@@ -18,7 +18,8 @@ export default function tree(
         emptyText,
         expandSelected = true,
         grouped = true,
-        openLevel = 0
+        openLevel = 0,
+        direction = 'auto'
     }) {
     return {
         state,
@@ -43,7 +44,8 @@ export default function tree(
                 emptyText,
                 expandSelected,
                 grouped,
-                openLevel
+                openLevel,
+                direction
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {

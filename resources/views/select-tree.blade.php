@@ -29,6 +29,7 @@
                 expandSelected: '{{ $getExpandSelected() }}',
                 grouped: '{{ $getGrouped() }}',
                 openLevel: '{{ $getDefaultOpenLevel() }}',
+                direction: '{{ $getDirection() }}',
             })"
         >
             <div x-ref="tree"></div>

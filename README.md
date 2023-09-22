@@ -62,8 +62,11 @@ SelectTree::make('category_id')
 // Expand the tree with selected values
 ->expandSelected(false)
 
-//	All groups will be opened to this level
+// All groups will be opened to this level
 ->defaultOpenLevel(2)
+
+// Specify the list's force direction. Options include: auto (default), top, and bottom.
+->directon('top')
 
 // Display individual leaf nodes instead of the main group when all leaf nodes are selected
 ->grouped(false)
