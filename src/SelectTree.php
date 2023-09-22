@@ -47,6 +47,8 @@ class SelectTree extends Field
 
     protected Closure|int $defaultOpenLevel;
 
+    protected string $direction = 'auto';
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -123,6 +125,13 @@ class SelectTree extends Field
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
+
+        return $this;
+    }
+
+    public function direction(string $direction): static
+    {
+        $this->direction = $direction;
 
         return $this;
     }
@@ -251,5 +260,10 @@ class SelectTree extends Field
     public function getEmptyLabel(): string
     {
         return $this->emptyLabel ? $this->evaluate($this->emptyLabel) : __('No results found');
+    }
+
+    public function getDirection(): string
+    {
+        return $this->evaluate($this->direction);
     }
 }
