@@ -28,6 +28,7 @@
                 emptyText: '{{ $getEmptyLabel() }}',
                 expandSelected: '{{ $getExpandSelected() }}',
                 grouped: '{{ $getGrouped() }}',
+                openLevel: '{{ $getDefaultOpenLevel() }}',
             })"
         >
             <div x-ref="tree"></div>

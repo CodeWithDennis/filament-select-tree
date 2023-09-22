@@ -45,6 +45,8 @@ class SelectTree extends Field
 
     protected ?Closure $modifyQueryUsing;
 
+    protected Closure|int $defaultOpenLevel;
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -154,6 +156,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function defaultOpenLevel(Closure|int $defaultOpenLevel = 0): static
+    {
+        $this->defaultOpenLevel = $defaultOpenLevel;
+
+        return $this;
+    }
+
     public function expandSelected(bool $expandSelected = true): static
     {
         $this->expandSelected = $expandSelected;
@@ -232,6 +241,11 @@ class SelectTree extends Field
     public function getEnableBranchNode(): bool
     {
         return $this->evaluate($this->enableBranchNode);
+    }
+
+    public function getDefaultOpenLevel(): int
+    {
+        return $this->evaluate($this->defaultOpenLevel);
     }
 
     public function getEmptyLabel(): string
