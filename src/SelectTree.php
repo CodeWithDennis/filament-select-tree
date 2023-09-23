@@ -45,7 +45,7 @@ class SelectTree extends Field
 
     protected ?Closure $modifyQueryUsing;
 
-    protected Closure|int $defaultOpenLevel;
+    protected Closure|int $defaultOpenLevel = 0;
 
     protected string $direction = 'auto';
 

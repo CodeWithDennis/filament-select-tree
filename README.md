@@ -29,6 +29,8 @@ php artisan filament:assets
 ## Usage
 
 ```PHP
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+
 // Create a tree based on a 'BelongsToMany' relationship
 SelectTree::make('categories')
     ->relationship('categories', 'name', 'parent_id', function ($query) {
