@@ -21,8 +21,6 @@ class SelectTree extends Field
 
     protected bool $withCount = false;
 
-    protected bool $multiple = false;
-
     protected bool $alwaysOpen = false;
 
     protected string $emptyLabel = '';
