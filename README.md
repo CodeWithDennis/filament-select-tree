@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codewithdennis/filament-select-tree.svg?style=flat-square)](https://packagist.org/packages/codewithdennis/filament-select-tree)
 [![Total Downloads](https://img.shields.io/packagist/dt/codewithdennis/filament-select-tree.svg?style=flat-square)](https://packagist.org/packages/codewithdennis/filament-select-tree)
 
-The multi-level select field lets you pick one or multiple options from a list that's neatly organized into different levels. It's all made possible with [TreeSelectJS](https://github.com/dipson88/treeselectjs).
+This is a package that allows you to create an interactive select tree field based on relationships in your Laravel / Filament application. It provides a convenient way to build hierarchical selection dropdowns with various customization options.
 
 ![Select Tree](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/d944b896-134b-414a-b654-9adecc43ba5e)
 
@@ -14,6 +14,9 @@ You can install the package via composer:
 
 ```bash
 composer require codewithdennis/filament-select-tree
+```
+
+```bash
 php artisan filament:assets
 ```
 
@@ -24,62 +27,109 @@ php artisan filament:assets
 - BelongsTo Integration: Establish connections within your data effortlessly.
 - BelongsToMany Integration: Simplify the management of complex relationships through BelongsToMany integration.
 
-🐛 One thing I have noticed about this project is that it tends to run a lot of queries, mainly because of its recursive design. Working to fix this in the upcoming updates.
+__🔍 One thing I've noticed is that it runs a lot of queries, mainly because of its recursive design. Working on reducing this in the upcoming updates to make it faster!__
 
 ## Usage
 
+Import the `SelectTree` class from the `CodeWithDennis\FilamentSelectTree` namespace
+
 ```PHP
 use CodeWithDennis\FilamentSelectTree\SelectTree;
+```
 
-// Create a tree based on a 'BelongsToMany' relationship
+Create a tree based on a 'BelongsToMany' relationship
+
+```PHP
 SelectTree::make('categories')
     ->relationship('categories', 'name', 'parent_id', function ($query) {
         return $query;
     })
+```
 
-// Create a tree based on a 'BelongsTo' relationship
+Create a tree based on a 'BelongsTo' relationship
+
+```PHP
 SelectTree::make('category_id')
     ->relationship('category', 'name', 'parent_id', function ($query) {
         return $query;
     })
+```
 
-// Set a custom placeholder when no items are selected
-->placeholder(__('Enter your custom placeholder here'))
+Set a custom placeholder when no items are selected
 
-// Enable the selection of groups
+```PHP
+->placeholder(__('Please select a category'))
+```
+
+Enable the selection of groups
+
+```PHP
 ->enableBranchNode()
+```
 
-// Customize the label when there are zero search results
-->emptyLabel(__('No results found'))
+Customize the label when there are zero search results
 
-// Display the count of children alongside the group's name
+```PHP
+->emptyLabel(__('Oops, no results have been found!'))
+```
+
+Display the count of children alongside the group's name
+
+```PHP
 ->withCount()
+```
 
-// Keep the dropdown open at all times
+Keep the dropdown open at all times
+
+```PHP
 ->alwaysOpen()
+```
 
-// Set nodes as dependent
+Set nodes as dependent
+
+```PHP
 ->independent(false)
+```
 
-// Set the parent's null value to -1, allowing you to use -1 as a sentinel value (default = null)
-->parentNullValue(-1)
+Expand the tree with selected values (only works if field is dependent)
 
-// Expand the tree with selected values
+```PHP
 ->expandSelected(false)
+```
 
-// All groups will be opened to this level
+Set the parent's null value to -1, allowing you to use -1 as a sentinel value (default = null)
+
+```PHP
+->parentNullValue(-1)
+```
+
+All groups will be opened to this level
+
+```PHP
 ->defaultOpenLevel(2)
+```
 
-// Specify the list's force direction. Options include: auto (default), top, and bottom.
+Specify the list's force direction. Options include: auto (default), top, and bottom.
+
+```PHP
 ->directon('top')
+```
 
-// Display individual leaf nodes instead of the main group when all leaf nodes are selected
+Display individual leaf nodes instead of the main group when all leaf nodes are selected
+
+```PHP
 ->grouped(false)
+```
 
-// Hide the clearable icon
+Hide the clearable icon
+
+```PHP
 ->clearable(false)
+```
 
-// Activate the search functionality for the SelectTree
+Activate the search functionality
+
+```PHP
 ->searchable();
 ```
 
