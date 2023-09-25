@@ -61,6 +61,9 @@ SelectTree::make('category_id')
 // Set nodes as dependent
 ->independent(false)
 
+// Set the parent's null value to -1, allowing you to use -1 as a sentinel value (default = null)
+->parentNullValue(-1)
+
 // Expand the tree with selected values
 ->expandSelected(false)
 

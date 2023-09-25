@@ -31,6 +31,8 @@ class SelectTree extends Field
 
     protected string $parentAttribute;
 
+    protected null|int|string $parentNullValue = null;
+
     protected bool $clearable = true;
 
     protected bool $expandSelected = true;
@@ -79,8 +81,11 @@ class SelectTree extends Field
         });
     }
 
-    private function buildTree(int $parent = null): array|Collection
+    private function buildTree($parent = null): array|Collection
     {
+        // Assign the parent's null value to the $parent variable if it's not null
+        $parent = $this->getParentNullValue() ?? $parent;
+
         // Create a default query to retrieve related items.
         $defaultQuery = $this->getRelationship()
             ->getRelated()
@@ -88,7 +93,7 @@ class SelectTree extends Field
             ->where($this->getParentAttribute(), $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (! $parent && $this->modifyQueryUsing) {
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -134,6 +139,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function parentNullValue(null|int|string $parentNullValue = null): static
+    {
+        $this->parentNullValue = $parentNullValue;
+
+        return $this;
+    }
+
     public function getRelationship(): BelongsToMany|BelongsTo
     {
         return $this->getModelInstance()->{$this->evaluate($this->relationship)}();
@@ -147,6 +159,11 @@ class SelectTree extends Field
     public function getParentAttribute(): string
     {
         return $this->evaluate($this->parentAttribute);
+    }
+
+    public function getParentNullValue(): null|int|string
+    {
+        return $this->evaluate($this->parentNullValue);
     }
 
     public function clearable(bool $clearable = true): static
