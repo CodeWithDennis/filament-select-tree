@@ -93,7 +93,7 @@ class SelectTree extends Field
             ->where($this->getParentAttribute(), $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (!$parent && $this->modifyQueryUsing) {
+        if (! $parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -139,7 +139,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function parentNullValue(null|int|string $parentNullValue = null): static
+    public function parentNullValue(int|string $parentNullValue = null): static
     {
         $this->parentNullValue = $parentNullValue;
 
