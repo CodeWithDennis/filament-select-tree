@@ -84,7 +84,9 @@ class SelectTree extends Field
     private function buildTree($parent = null): array|Collection
     {
         // Assign the parent's null value to the $parent variable if it's not null
-        $parent = $this->getParentNullValue() ?? $parent;
+        if ($parent == null || $parent == $this->getParentNullValue()) {
+            $parent = $this->getParentNullValue() ?? $parent;
+        }
 
         // Create a default query to retrieve related items.
         $defaultQuery = $this->getRelationship()
