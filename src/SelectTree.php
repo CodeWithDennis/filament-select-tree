@@ -7,6 +7,7 @@ use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -20,6 +21,8 @@ class SelectTree extends Field
     protected string $view = 'select-tree::select-tree';
 
     protected bool $withCount = false;
+
+    protected ?Alignment $countPosition = null;
 
     protected bool $alwaysOpen = false;
 
@@ -141,6 +144,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function countPosition(Alignment $countPosition): static
+    {
+        $this->countPosition = $countPosition;
+
+        return $this;
+    }
+
     public function parentNullValue(int|string $parentNullValue = null): static
     {
         $this->parentNullValue = $parentNullValue;
@@ -247,6 +257,11 @@ class SelectTree extends Field
     public function getWithCount(): bool
     {
         return $this->evaluate($this->withCount);
+    }
+
+    public function getCountPosition(): ?Alignment
+    {
+        return $this->evaluate($this->countPosition);
     }
 
     public function getMultiple(): bool

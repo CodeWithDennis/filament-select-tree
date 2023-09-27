@@ -79,6 +79,14 @@ Display the count of children alongside the group's name
 ->withCount()
 ```
 
+Change the position of the count
+
+```PHP
+use Filament\Support\Enums\Alignment;
+
+->countPosition(Alignment::Left) // Alignment::Left or Alignment::Right
+```
+
 Keep the dropdown open at all times
 
 ```PHP
