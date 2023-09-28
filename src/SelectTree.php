@@ -98,7 +98,7 @@ class SelectTree extends Field
             ->where($this->getParentAttribute(), $parent);
 
         // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (! $parent && $this->modifyQueryUsing) {
+        if (!$parent && $this->modifyQueryUsing) {
             $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
         }
 
@@ -130,9 +130,10 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function withCount(bool $withCount = true): static
+    public function withCount(bool $withCount = true, ?Alignment $position = null): static
     {
         $this->withCount = $withCount;
+        $this->countPosition = $position;
 
         return $this;
     }
@@ -140,13 +141,6 @@ class SelectTree extends Field
     public function direction(string $direction): static
     {
         $this->direction = $direction;
-
-        return $this;
-    }
-
-    public function countPosition(Alignment $countPosition): static
-    {
-        $this->countPosition = $countPosition;
 
         return $this;
     }
