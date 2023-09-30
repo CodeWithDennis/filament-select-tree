@@ -87,7 +87,7 @@ class SelectTree extends Field
         $nullParentQuery = $this->getRelationship()->getRelated()->query()->where($this->getParentAttribute(), $this->getParentNullValue());
         $nonNullParentQuery = $this->getRelationship()->getRelated()->query()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
 
-        // If we're not at the root level and a modification callback is provided, apply it to both queries.
+        // If we're not at the root level and a modification callback is provided, apply it to null query
         if ($this->modifyQueryUsing) {
             $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
         }
