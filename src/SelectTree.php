@@ -118,7 +118,7 @@ class SelectTree extends Field
         // Group results by their parent IDs
         foreach ($results as $result) {
             $parentId = $result->{$this->getParentAttribute()};
-            if (!isset($resultMap[$parentId])) {
+            if (! isset($resultMap[$parentId])) {
                 $resultMap[$parentId] = [];
             }
             $resultMap[$parentId][] = $result;
