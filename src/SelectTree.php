@@ -81,40 +81,81 @@ class SelectTree extends Field
         });
     }
 
-    private function buildTree($parent = null): array|Collection
+    private function buildTree(): Collection
+    {
+        // Start with two separate query builders
+        $nullParentQuery = $this->getRelationship()->getRelated()->query()->where($this->getParentAttribute(), $this->getParentNullValue());
+        $nonNullParentQuery = $this->getRelationship()->getRelated()->query()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
+
+        // If we're not at the root level and a modification callback is provided, apply it to both queries.
+        if ($this->modifyQueryUsing) {
+            $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
+        }
+
+        // Fetch results for both queries
+        $nullParentResults = $nullParentQuery->get();
+        $nonNullParentResults = $nonNullParentQuery->get();
+
+        // Combine the results from both queries
+        $combinedResults = $nullParentResults->concat($nonNullParentResults);
+
+        return $this->buildTreeFromResults($combinedResults);
+    }
+
+    private function buildTreeFromResults($results, $parent = null): Collection
     {
         // Assign the parent's null value to the $parent variable if it's not null
         if ($parent == null || $parent == $this->getParentNullValue()) {
             $parent = $this->getParentNullValue() ?? $parent;
         }
 
-        // Create a default query to retrieve related items.
-        $defaultQuery = $this->getRelationship()
-            ->getRelated()
-            ->query()
-            ->where($this->getParentAttribute(), $parent);
+        // Create a collection to store the tree
+        $tree = collect();
 
-        // If we're not at the root level and a modification callback is provided, apply it to the query.
-        if (! $parent && $this->modifyQueryUsing) {
-            $defaultQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $defaultQuery]);
+        // Create a mapping of results by their parent IDs for faster lookup
+        $resultMap = [];
+
+        // Group results by their parent IDs
+        foreach ($results as $result) {
+            $parentId = $result->{$this->getParentAttribute()};
+            if (!isset($resultMap[$parentId])) {
+                $resultMap[$parentId] = [];
+            }
+            $resultMap[$parentId][] = $result;
         }
 
-        // Fetch the results from the default query.
-        $results = $defaultQuery->get();
+        // Recursively build the tree starting from the root (null parent)
+        $rootResults = $resultMap[$parent] ?? [];
+        foreach ($rootResults as $result) {
+            // Build a node and add it to the tree
+            $node = $this->buildNode($result, $resultMap);
+            $tree->push($node);
+        }
 
-        // Map the results into a tree structure.
-        return $results->map(function ($result) {
+        return $tree;
+    }
 
-            // Recursively build children trees for the current result.
-            $children = $this->buildTree($result->id);
+    private function buildNode($result, $resultMap): array
+    {
+        // Create a node with 'name' and 'value' attributes
+        $node = [
+            'name' => $result->{$this->getTitleAttribute()},
+            'value' => $result->id,
+        ];
 
-            // Create an array representation of the current result with children.
-            return [
-                'name' => $result->{$this->getTitleAttribute()},
-                'value' => $result->id,
-                'children' => $children->isEmpty() ? null : $children->toArray(),
-            ];
-        });
+        // Check if the result has children
+        if (isset($resultMap[$result->id])) {
+            $children = collect();
+            // Recursively build child nodes
+            foreach ($resultMap[$result->id] as $child) {
+                $childNode = $this->buildNode($child, $resultMap);
+                $children->push($childNode);
+            }
+            // Add children to the node
+            $node['children'] = $children->toArray();
+        }
+
+        return $node;
     }
 
     public function relationship(string $relationship, string $titleAttribute, string $parentAttribute, Closure $modifyQueryUsing = null): self
