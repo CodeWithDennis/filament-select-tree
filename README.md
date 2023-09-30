@@ -27,8 +27,6 @@ php artisan filament:assets
 - BelongsTo Integration: Establish connections within your data effortlessly.
 - BelongsToMany Integration: Simplify the management of complex relationships through BelongsToMany integration.
 
-__🔍 One thing I've noticed is that it runs a lot of queries, mainly because of its recursive design. Working on reducing this in the upcoming updates to make it faster!__
-
 ## Usage
 
 Import the `SelectTree` class from the `CodeWithDennis\FilamentSelectTree` namespace
