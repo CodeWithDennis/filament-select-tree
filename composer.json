@@ -4,7 +4,9 @@
     "keywords": [
         "CodeWithDennis",
         "laravel",
-        "filament-select-tree"
+        "filament-select-tree",
+        "filament",
+        "tree"
     ],
     "homepage": "https://github.com/codewithdennis/filament-select-tree",
     "support": {
@@ -14,7 +16,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Dennis Elsinga",
+            "name": "CodeWithDennis",
             "role": "Developer"
         }
     ],
