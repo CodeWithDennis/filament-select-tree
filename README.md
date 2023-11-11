@@ -20,13 +20,6 @@ composer require codewithdennis/filament-select-tree
 php artisan filament:assets
 ```
 
-## Features
-
-- Dark Mode: It seamlessly supports both Filament's light and dark modes out of the box.
-- Search: Searching is fully supported, and it seamlessly searches through all levels within the tree structure.
-- BelongsTo Integration: Establish connections within your data effortlessly.
-- BelongsToMany Integration: Simplify the management of complex relationships through BelongsToMany integration.
-
 ## Usage
 
 Import the `SelectTree` class from the `CodeWithDennis\FilamentSelectTree` namespace
@@ -51,6 +44,38 @@ SelectTree::make('category_id')
     ->relationship('category', 'name', 'parent_id', function ($query) {
         return $query;
     })
+```
+
+Use the tree in your table filters. Here's an example to show you how.
+
+
+```bash
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
+```
+
+```php
+->filters([
+    Filter::make('tree')
+        ->form([
+            SelectTree::make('categories')
+                ->relationship('categories', 'name', 'parent_id')
+                ->independent(false)
+                ->enableBranchNode(),
+        ])
+        ->query(function (Builder $query, array $data) {
+            return $query->when($data['categories'], function ($query, $categories) {
+                return $query->whereHas('categories', fn($query) => $query->whereIn('id', $categories));
+            });
+        })
+        ->indicateUsing(function (array $data): ?string {
+            if (! $data['categories']) {
+                return null;
+            }
+
+            return __('Categories') . ': ' . implode(', ', Category::whereIn('id', $data['categories'])->get()->pluck('name')->toArray());
+        })
+])
 ```
 
 Set a custom placeholder when no items are selected
