@@ -234,3 +234,7 @@ html.dark .treeselect--disabled {
 .treeselect--disabled .treeselect-input__arrow {
     display: none;
 }
+
+.treeselect--disabled .treeselect-input__clear {
+    display: none;
+}
