@@ -135,7 +135,7 @@ All groups will be opened to this level
 Specify the list's force direction. Options include: auto (default), top, and bottom.
 
 ```PHP
-->directon('top')
+->direction('top')
 ```
 
 Display individual leaf nodes instead of the main group when all leaf nodes are selected
