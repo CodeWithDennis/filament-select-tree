@@ -156,6 +156,22 @@ Activate the search functionality
 ->searchable();
 ```
 
+Disable specific options in the tree
+
+```PHP
+->disabledOptions([2, 3, 4])
+```
+
+```PHP
+->disabledOptions(function () {
+    return Category::where('is_disabled', true)
+        ->get()
+        ->pluck('id')
+        ->toArray();
+})
+```
+
+
 ## Screenshots
 
 <img width="641" alt="light" src="https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/4d348c85-5ee9-45b1-9424-0d8b3efcc02e">

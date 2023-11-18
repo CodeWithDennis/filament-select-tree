@@ -49,7 +49,7 @@ class SelectTree extends Field
 
     protected string $direction = 'auto';
 
-    protected array $disabledOptions = [];
+    protected Closure|array $disabledOptions = [];
 
     protected function setUp(): void
     {
@@ -254,7 +254,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function disabledOptions(array $disabledOptions = []): static
+    public function disabledOptions(Closure|array $disabledOptions): static
     {
         $this->disabledOptions = $disabledOptions;
 
