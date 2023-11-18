@@ -183,7 +183,7 @@ html.dark .treeselect-list__item-checkbox-container {
 }
 
 .treeselect-input__tags-element:hover .treeselect-input__tags-cross svg {
-    stroke: rgba(var(--gray-950),var(--tw-text-opacity));
+    stroke: rgba(var(--gray-950), var(--tw-text-opacity));
 }
 
 html.dark .treeselect-input__tags-element:hover .treeselect-input__tags-cross svg {
@@ -237,4 +237,12 @@ html.dark .treeselect--disabled {
 
 .treeselect--disabled .treeselect-input__clear {
     display: none;
+}
+
+.treeselect-list__item--disabled {
+    cursor: not-allowed !important;
+}
+
+html.dark .treeselect-list__item--disabled .treeselect-list__item-checkbox-container {
+    background-color: hsl(0deg 0% 30.77% / 5%);
 }
