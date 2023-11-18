@@ -49,6 +49,8 @@ class SelectTree extends Field
 
     protected string $direction = 'auto';
 
+    protected array $disabledOptions = [];
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -118,7 +120,7 @@ class SelectTree extends Field
         // Group results by their parent IDs
         foreach ($results as $result) {
             $parentId = $result->{$this->getParentAttribute()};
-            if (! isset($resultMap[$parentId])) {
+            if (!isset($resultMap[$parentId])) {
                 $resultMap[$parentId] = [];
             }
             $resultMap[$parentId][] = $result;
@@ -141,6 +143,7 @@ class SelectTree extends Field
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
             'value' => $result->id,
+            'disabled' => in_array($result->id, $this->getDisabledOptions())
         ];
 
         // Check if the result has children
@@ -251,6 +254,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function disabledOptions(array $disabledOptions = []): static
+    {
+        $this->disabledOptions = $disabledOptions;
+
+        return $this;
+    }
+
     public function alwaysOpen(bool $alwaysOpen = true): static
     {
         $this->alwaysOpen = $alwaysOpen;
@@ -323,5 +333,10 @@ class SelectTree extends Field
     public function getDirection(): string
     {
         return $this->evaluate($this->direction);
+    }
+
+    public function getDisabledOptions(): array
+    {
+        return $this->evaluate($this->disabledOptions);
     }
 }
