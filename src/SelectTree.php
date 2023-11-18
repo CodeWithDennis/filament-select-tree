@@ -120,7 +120,7 @@ class SelectTree extends Field
         // Group results by their parent IDs
         foreach ($results as $result) {
             $parentId = $result->{$this->getParentAttribute()};
-            if (!isset($resultMap[$parentId])) {
+            if (! isset($resultMap[$parentId])) {
                 $resultMap[$parentId] = [];
             }
             $resultMap[$parentId][] = $result;
@@ -143,7 +143,7 @@ class SelectTree extends Field
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
             'value' => $result->id,
-            'disabled' => in_array($result->id, $this->getDisabledOptions())
+            'disabled' => in_array($result->id, $this->getDisabledOptions()),
         ];
 
         // Check if the result has children
