@@ -142,15 +142,15 @@ class SelectTree extends Field
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
-            'value' => $result->id,
-            'disabled' => in_array($result->id, $this->getDisabledOptions()),
+            'value' => $result->getKey(),
+            'disabled' => in_array($result->getKey(), $this->getDisabledOptions()),
         ];
 
         // Check if the result has children
-        if (isset($resultMap[$result->id])) {
+        if (isset($resultMap[$result->getKey()])) {
             $children = collect();
             // Recursively build child nodes
-            foreach ($resultMap[$result->id] as $child) {
+            foreach ($resultMap[$result->getKey()] as $child) {
                 $childNode = $this->buildNode($child, $resultMap);
                 $children->push($childNode);
             }
