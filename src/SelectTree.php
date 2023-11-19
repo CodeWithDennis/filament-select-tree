@@ -40,7 +40,7 @@ class SelectTree extends Field
     protected bool $enableBranchNode = false;
 
     protected bool $grouped = true;
-
+    protected bool $rtl = false;
     protected string|Closure $relationship;
 
     protected ?Closure $modifyQueryUsing;
@@ -185,6 +185,11 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function rtl(bool $flag = true)
+    {
+        $this->rtl = $flag;
+        return $this;
+    }
     public function parentNullValue(int|string $parentNullValue = null): static
     {
         $this->parentNullValue = $parentNullValue;
@@ -334,7 +339,10 @@ class SelectTree extends Field
     {
         return $this->evaluate($this->direction);
     }
-
+    public function getRtl(): bool
+    {
+        return $this->rtl;
+    }
     public function getDisabledOptions(): array
     {
         return $this->evaluate($this->disabledOptions);

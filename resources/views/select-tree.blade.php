@@ -30,6 +30,7 @@
                 grouped: '{{ $getGrouped() }}',
                 openLevel: '{{ $getDefaultOpenLevel() }}',
                 direction: '{{ $getDirection() }}',
+                rtl: '{{ $getRtl() }}'
             })"
         >
             <div x-ref="tree"></div>

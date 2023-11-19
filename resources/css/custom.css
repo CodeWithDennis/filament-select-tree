@@ -246,3 +246,11 @@ html.dark .treeselect--disabled {
 html.dark .treeselect-list__item--disabled .treeselect-list__item-checkbox-container {
     background-color: hsl(0deg 0% 30.77% / 5%);
 }
+[dir='rtl'] .treeselect-input__operators {
+    left: 2px !important;
+    right: unset;
+}
+
+[dir='rtl'] .treeselect-input {
+    padding: 2px 4px 2px 40px;
+}
