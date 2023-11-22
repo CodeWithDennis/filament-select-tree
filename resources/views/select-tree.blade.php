@@ -30,7 +30,7 @@
                 grouped: '{{ $getGrouped() }}',
                 openLevel: '{{ $getDefaultOpenLevel() }}',
                 direction: '{{ $getDirection() }}',
-                rtl: '{{ ((__('filament-panels::layout.direction')??'ltr')=='rtl'?true:false) }}'
+                rtl: '{{ __('filament-panels::layout.direction')==='rtl' }}'
             })"
         >
             <div x-ref="tree"></div>

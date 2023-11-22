@@ -334,6 +334,7 @@ class SelectTree extends Field
     {
         return $this->evaluate($this->direction);
     }
+
     public function getDisabledOptions(): array
     {
         return $this->evaluate($this->disabledOptions);
