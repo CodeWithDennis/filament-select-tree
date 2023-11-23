@@ -8,6 +8,7 @@ export default function tree(
         searchable,
         showCount,
         placeholder,
+        rtl,
         disabledBranchNode = true,
         disabled = false,
         isSingleSelect = true,
@@ -45,7 +46,8 @@ export default function tree(
                 expandSelected,
                 grouped,
                 openLevel,
-                direction
+                direction,
+                rtl
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {
