@@ -1,5 +1,6 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
+            wire:key="{{ rand() }}"
             wire:ignore
             x-data
             x-load-css="[
