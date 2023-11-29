@@ -126,7 +126,7 @@ class SelectTree extends Field
             $resultMap[$parentId][] = $result;
         }
 
-                // Define disabled options
+        // Define disabled options
         $disabledOptions = $this->getDisabledOptions();
 
         // Recursively build the tree starting from the root (null parent)
