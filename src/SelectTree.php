@@ -126,24 +126,27 @@ class SelectTree extends Field
             $resultMap[$parentId][] = $result;
         }
 
+        // Define disabled options
+        $disabledOptions = $this->getDisabledOptions();
+
         // Recursively build the tree starting from the root (null parent)
         $rootResults = $resultMap[$parent] ?? [];
         foreach ($rootResults as $result) {
             // Build a node and add it to the tree
-            $node = $this->buildNode($result, $resultMap);
+            $node = $this->buildNode($result, $resultMap, $disabledOptions);
             $tree->push($node);
         }
 
         return $tree;
     }
 
-    private function buildNode($result, $resultMap): array
+    private function buildNode($result, $resultMap, $disabledOptions): array
     {
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
             'value' => $result->getKey(),
-            'disabled' => in_array($result->getKey(), $this->getDisabledOptions()),
+            'disabled' => in_array($result->getKey(), $disabledOptions),
         ];
 
         // Check if the result has children
@@ -151,7 +154,7 @@ class SelectTree extends Field
             $children = collect();
             // Recursively build child nodes
             foreach ($resultMap[$result->getKey()] as $child) {
-                $childNode = $this->buildNode($child, $resultMap);
+                $childNode = $this->buildNode($child, $resultMap, $disabledOptions);
                 $children->push($childNode);
             }
             // Add children to the node
