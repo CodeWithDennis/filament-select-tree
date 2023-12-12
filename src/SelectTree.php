@@ -174,7 +174,7 @@ class SelectTree extends Field
         return $node;
     }
 
-    public function relationship(string $relationship, string $titleAttribute, string $parentAttribute, Closure $modifyQueryUsing = null): self
+    public function relationship(string $relationship, string $titleAttribute, string $parentAttribute, ?Closure $modifyQueryUsing = null): self
     {
         $this->relationship = $relationship;
         $this->titleAttribute = $titleAttribute;
@@ -198,7 +198,7 @@ class SelectTree extends Field
         return $this;
     }
 
-    public function parentNullValue(int|string $parentNullValue = null): static
+    public function parentNullValue(int|string|null $parentNullValue = null): static
     {
         $this->parentNullValue = $parentNullValue;
 
