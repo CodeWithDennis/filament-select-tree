@@ -51,6 +51,8 @@ class SelectTree extends Field
 
     protected Closure|array $disabledOptions = [];
 
+    protected Closure|array $hiddenOptions = [];
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -129,24 +131,28 @@ class SelectTree extends Field
         // Define disabled options
         $disabledOptions = $this->getDisabledOptions();
 
+        // Define hidden options
+        $hiddenOptions = $this->getHiddenOptions();
+
         // Recursively build the tree starting from the root (null parent)
         $rootResults = $resultMap[$parent] ?? [];
         foreach ($rootResults as $result) {
             // Build a node and add it to the tree
-            $node = $this->buildNode($result, $resultMap, $disabledOptions);
+            $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
             $tree->push($node);
         }
 
         return $tree;
     }
 
-    private function buildNode($result, $resultMap, $disabledOptions): array
+    private function buildNode($result, $resultMap, $disabledOptions, $hiddenOptions): array
     {
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
             'value' => $result->getKey(),
             'disabled' => in_array($result->getKey(), $disabledOptions),
+            'hidden' => in_array($result->getKey(), $hiddenOptions),
         ];
 
         // Check if the result has children
@@ -154,7 +160,11 @@ class SelectTree extends Field
             $children = collect();
             // Recursively build child nodes
             foreach ($resultMap[$result->getKey()] as $child) {
-                $childNode = $this->buildNode($child, $resultMap, $disabledOptions);
+                // don't add the hidden ones
+                if (in_array($child->getKey(), $hiddenOptions)) {
+                    continue;
+                }
+                $childNode = $this->buildNode($child, $resultMap, $disabledOptions, $hiddenOptions);
                 $children->push($childNode);
             }
             // Add children to the node
@@ -264,6 +274,13 @@ class SelectTree extends Field
         return $this;
     }
 
+    public function hiddenOptions(Closure|array $hiddenOptions): static
+    {
+        $this->hiddenOptions = $hiddenOptions;
+
+        return $this;
+    }
+
     public function alwaysOpen(bool $alwaysOpen = true): static
     {
         $this->alwaysOpen = $alwaysOpen;
@@ -341,5 +358,10 @@ class SelectTree extends Field
     public function getDisabledOptions(): array
     {
         return $this->evaluate($this->disabledOptions);
+    }
+
+    public function getHiddenOptions(): array
+    {
+        return $this->evaluate($this->hiddenOptions);
     }
 }
