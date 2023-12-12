@@ -169,6 +169,21 @@ Disable specific options in the tree
         ->pluck('id')
         ->toArray();
 })
+
+```
+Hide specific options in the tree
+
+```PHP
+->hiddenOptions([2, 3, 4])
+```
+
+```PHP
+->hiddenOptions(function () {
+    return Category::where('is_hidden', true)
+        ->get()
+        ->pluck('id')
+        ->toArray();
+})
 ```
 
 
