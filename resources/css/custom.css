@@ -196,14 +196,6 @@ html.dark .treeselect-input__tags-element:hover svg {
     margin-left: 3px;
 }
 
-/*html.dark .treeselect--disabled {*/
-/*    background-color: #09090b;*/
-/*}*/
-
-/*.treeselect--disabled {*/
-/*    background-color: #fafafa;*/
-/*}*/
-
 .treeselect--disabled .treeselect-input__tags-cross {
     display: none;
 }
