@@ -5,6 +5,7 @@ namespace CodeWithDennis\FilamentSelectTree;
 use Closure;
 use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
+use Filament\Forms\Components\Concerns\HasAffixes;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,6 +17,7 @@ class SelectTree extends Field
     use CanBeDisabled;
     use CanBeSearchable;
     use HasPlaceholder;
+    use HasAffixes;
 
     protected string $view = 'select-tree::select-tree';
 

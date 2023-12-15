@@ -1,3 +1,10 @@
+@php
+    $prefixLabel = $getPrefixLabel();
+    $suffixLabel = $getSuffixLabel();
+    $prefixIcon = $getPrefixIcon();
+    $suffixIcon = $getSuffixIcon();
+@endphp
+
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
             wire:key="{{ rand() }}"
@@ -34,7 +41,15 @@
                 rtl: '{{ __('filament-panels::layout.direction') === 'rtl' }}'
             })"
         >
-            <div x-ref="tree"></div>
+            <x-filament::input.wrapper
+                    :suffix="$suffixLabel"
+                    :prefix="$prefixLabel"
+                    :prefix-icon="$prefixIcon"
+                    :suffix-icon="$suffixIcon"
+                    :disabled="$isDisabled()"
+            >
+                <div x-ref="tree"></div>
+            </x-filament::input.wrapper>
         </div>
     </div>
 </x-dynamic-component>
