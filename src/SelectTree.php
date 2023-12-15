@@ -16,8 +16,8 @@ class SelectTree extends Field
 {
     use CanBeDisabled;
     use CanBeSearchable;
-    use HasPlaceholder;
     use HasAffixes;
+    use HasPlaceholder;
 
     protected string $view = 'select-tree::select-tree';
 
