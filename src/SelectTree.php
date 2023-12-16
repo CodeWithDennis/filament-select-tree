@@ -18,9 +18,9 @@ class SelectTree extends Field implements HasAffixActions
 {
     use CanBeDisabled;
     use CanBeSearchable;
+    use HasActions;
     use HasAffixes;
     use HasPlaceholder;
-    use HasActions;
 
     protected string $view = 'select-tree::select-tree';
 
