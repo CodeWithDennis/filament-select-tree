@@ -3,6 +3,8 @@
     $suffixLabel = $getSuffixLabel();
     $prefixIcon = $getPrefixIcon();
     $suffixIcon = $getSuffixIcon();
+    $prefixActions = $getPrefixActions();
+    $suffixActions = $getSuffixActions();
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
@@ -47,6 +49,8 @@
                     :prefix-icon="$prefixIcon"
                     :suffix-icon="$suffixIcon"
                     :disabled="$isDisabled()"
+                    :prefix-actions="$prefixActions"
+                    :suffix-actions="$suffixActions"
             >
                 <div x-ref="tree"></div>
             </x-filament::input.wrapper>
