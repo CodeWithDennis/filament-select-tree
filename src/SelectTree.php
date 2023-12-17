@@ -63,9 +63,9 @@ class SelectTree extends Field implements HasAffixActions
 
     protected Closure|array $hiddenOptions = [];
 
-    protected array | Closure | null $createOptionActionForm = null;
+    protected array|Closure|null $createOptionActionForm = null;
 
-    protected string | Closure | null $createOptionModalHeading = null;
+    protected string|Closure|null $createOptionModalHeading = null;
 
     protected ?Closure $modifyCreateOptionActionUsing = null;
 
@@ -399,7 +399,7 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate($this->hiddenOptions);
     }
 
-    public function getCreateOptionActionForm(Form $form): array | Form | null
+    public function getCreateOptionActionForm(Form $form): array|Form|null
     {
         return $this->evaluate($this->createOptionActionForm, ['form' => $form]);
     }
@@ -414,14 +414,14 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate($this->createOptionModalHeading);
     }
 
-    public function manageOptionForm(array | Closure | null $schema): static
+    public function manageOptionForm(array|Closure|null $schema): static
     {
         $this->createOptionForm($schema);
 
         return $this;
     }
 
-    public function createOptionForm(array | Closure | null $schema): static
+    public function createOptionForm(array|Closure|null $schema): static
     {
         $this->createOptionActionForm = $schema;
 
@@ -456,7 +456,7 @@ class SelectTree extends Field implements HasAffixActions
         }
 
         $action = Action::make($this->getCreateOptionActionName())
-            ->form(function (SelectTree $component, Form $form): array | Form | null {
+            ->form(function (SelectTree $component, Form $form): array|Form|null {
                 return $component->getCreateOptionActionForm($form->model(
                     $component->getRelationship() ? $component->getRelationship()->getModel()::class : null,
                 ));
@@ -515,5 +515,4 @@ class SelectTree extends Field implements HasAffixActions
 
         return $action;
     }
-
 }
