@@ -473,7 +473,7 @@ class SelectTree extends Field implements HasAffixActions
 
                 $state = $component->getMultiple()
                     ? [
-                        ...$component->getState(),
+                        ...$component->getState() ?? [],
                         $createdOptionKey,
                     ]
                     : $createdOptionKey;
