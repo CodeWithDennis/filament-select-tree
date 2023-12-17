@@ -413,14 +413,7 @@ class SelectTree extends Field implements HasAffixActions
     {
         return $this->evaluate($this->createOptionModalHeading);
     }
-
-    public function manageOptionForm(array|Closure|null $schema): static
-    {
-        $this->createOptionForm($schema);
-
-        return $this;
-    }
-
+    
     public function createOptionForm(array|Closure|null $schema): static
     {
         $this->createOptionActionForm = $schema;
