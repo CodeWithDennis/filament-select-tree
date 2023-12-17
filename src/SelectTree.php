@@ -3,6 +3,9 @@
 namespace CodeWithDennis\FilamentSelectTree;
 
 use Closure;
+use Exception;
+use Filament\Forms\ComponentContainer;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasActions;
@@ -10,6 +13,8 @@ use Filament\Forms\Components\Concerns\HasAffixes;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Contracts\HasAffixActions;
 use Filament\Forms\Components\Field;
+use Filament\Forms\Form;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Collection;
@@ -58,6 +63,16 @@ class SelectTree extends Field implements HasAffixActions
 
     protected Closure|array $hiddenOptions = [];
 
+    protected array|Closure|null $createOptionActionForm = null;
+
+    protected string|Closure|null $createOptionModalHeading = null;
+
+    protected ?Closure $modifyCreateOptionActionUsing = null;
+
+    protected ?Closure $modifyManageOptionActionsUsing = null;
+
+    protected ?Closure $createOptionUsing = null;
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -88,6 +103,20 @@ class SelectTree extends Field implements HasAffixActions
                 $component->getRelationship()->sync($state->toArray());
             }
         });
+
+        $this->createOptionUsing(static function (SelectTree $component, array $data, Form $form) {
+            $record = $component->getRelationship()->getRelated();
+            $record->fill($data);
+            $record->save();
+
+            $form->model($record)->saveRelationships();
+
+            return $record->getKey();
+        });
+
+        $this->suffixActions([
+            static fn (SelectTree $component): ?Action => $component->getCreateOptionAction(),
+        ]);
     }
 
     private function buildTree(): Collection
@@ -368,5 +397,115 @@ class SelectTree extends Field implements HasAffixActions
     public function getHiddenOptions(): array
     {
         return $this->evaluate($this->hiddenOptions);
+    }
+
+    public function getCreateOptionActionForm(Form $form): array|Form|null
+    {
+        return $this->evaluate($this->createOptionActionForm, ['form' => $form]);
+    }
+
+    public function hasCreateOptionActionFormSchema(): bool
+    {
+        return (bool) $this->createOptionActionForm;
+    }
+
+    public function getCreateOptionModalHeading(): ?string
+    {
+        return $this->evaluate($this->createOptionModalHeading);
+    }
+
+    public function createOptionForm(array|Closure|null $schema): static
+    {
+        $this->createOptionActionForm = $schema;
+
+        return $this;
+    }
+
+    public function getCreateOptionActionName(): string
+    {
+        return 'createOption';
+    }
+
+    public function getCreateOptionUsing(): ?Closure
+    {
+        return $this->createOptionUsing;
+    }
+
+    public function createOptionUsing(Closure $callback): static
+    {
+        $this->createOptionUsing = $callback;
+
+        return $this;
+    }
+
+    public function getCreateOptionAction(): ?Action
+    {
+        if ($this->isDisabled()) {
+            return null;
+        }
+
+        if (! $this->hasCreateOptionActionFormSchema()) {
+            return null;
+        }
+
+        $action = Action::make($this->getCreateOptionActionName())
+            ->form(function (SelectTree $component, Form $form): array|Form|null {
+                return $component->getCreateOptionActionForm($form->model(
+                    $component->getRelationship() ? $component->getRelationship()->getModel()::class : null,
+                ));
+            })
+            ->action(static function (Action $action, array $arguments, SelectTree $component, array $data, ComponentContainer $form) {
+                if (! $component->getCreateOptionUsing()) {
+                    throw new Exception("Select field [{$component->getStatePath()}] must have a [createOptionUsing()] closure set.");
+                }
+
+                $createdOptionKey = $component->evaluate($component->getCreateOptionUsing(), [
+                    'data' => $data,
+                    'form' => $form,
+                ]);
+
+                $state = $component->getMultiple()
+                    ? [
+                        ...$component->getState() ?? [],
+                        $createdOptionKey,
+                    ]
+                    : $createdOptionKey;
+
+                $component->state($state);
+                $component->callAfterStateUpdated();
+
+                if (! ($arguments['another'] ?? false)) {
+                    return;
+                }
+
+                $action->callAfter();
+
+                $form->fill();
+
+                $action->halt();
+            })
+            ->color('gray')
+            ->icon(FilamentIcon::resolve('forms::components.select.actions.create-option') ?? 'heroicon-m-plus')
+            ->iconButton()
+            ->modalHeading($this->getCreateOptionModalHeading() ?? __('filament-forms::components.select.actions.create_option.modal.heading'))
+            ->modalSubmitActionLabel(__('filament-forms::components.select.actions.create_option.modal.actions.create.label'))
+            ->extraModalFooterActions(fn (Action $action, SelectTree $component): array => $component->getMultiple() ? [
+                $action->makeModalSubmitAction('createAnother', arguments: ['another' => true])
+                    ->label(__('filament-forms::components.select.actions.create_option.modal.actions.create_another.label')),
+            ] : []);
+
+        if ($this->modifyManageOptionActionsUsing) {
+            $action = $this->evaluate($this->modifyManageOptionActionsUsing, [
+                'action' => $action,
+            ]) ?? $action;
+        }
+
+        if ($this->modifyCreateOptionActionUsing) {
+            $action = $this->evaluate($this->modifyCreateOptionActionUsing, [
+                'action' => $action,
+            ]) ?? $action;
+        }
+
+        return $action;
     }
 }
