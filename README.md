@@ -22,7 +22,7 @@ php artisan filament:assets
 
 ## Relationships
 
-#### Use the tree for a `BelongsToMany` relationship
+Use the tree for a `BelongsToMany` relationship
 
 ```PHP
 use CodeWithDennis\FilamentSelectTree\SelectTree;
@@ -31,7 +31,7 @@ SelectTree::make('categories')
     ->relationship('categories', 'name', 'parent_id')
 ```
 
-#### Use the tree for a `BelongsTo` relationship
+Use the tree for a `BelongsTo` relationship
 
 ```PHP
 use CodeWithDennis\FilamentSelectTree\SelectTree;
