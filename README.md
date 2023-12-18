@@ -3,7 +3,7 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/codewithdennis/filament-select-tree.svg?style=flat-square)](https://packagist.org/packages/codewithdennis/filament-select-tree)
 [![Total Downloads](https://img.shields.io/packagist/dt/codewithdennis/filament-select-tree.svg?style=flat-square)](https://packagist.org/packages/codewithdennis/filament-select-tree)
 
-This is a package that allows you to create an interactive select tree field based on relationships in your Laravel / Filament application. It provides a convenient way to build hierarchical selection dropdowns with various customization options.
+This package adds a dynamic select tree field to your Laravel / Filament application, allowing you to create interactive hierarchical selection dropdowns based on relationships. It's handy for building selection dropdowns with various customization options.
 
 ![Select Tree](https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/d944b896-134b-414a-b654-9adecc43ba5e)
 
@@ -20,63 +20,27 @@ composer require codewithdennis/filament-select-tree
 php artisan filament:assets
 ```
 
-## Usage
+## Relationships
 
-Import the `SelectTree` class from the `CodeWithDennis\FilamentSelectTree` namespace
+#### Use the tree for a `BelongsToMany` relationship
 
 ```PHP
 use CodeWithDennis\FilamentSelectTree\SelectTree;
-```
 
-Create a tree based on a 'BelongsToMany' relationship
-
-```PHP
 SelectTree::make('categories')
-    ->relationship('categories', 'name', 'parent_id', function ($query) {
-        return $query;
-    })
+    ->relationship('categories', 'name', 'parent_id')
 ```
 
-Create a tree based on a 'BelongsTo' relationship
+#### Use the tree for a `BelongsTo` relationship
 
 ```PHP
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+
 SelectTree::make('category_id')
-    ->relationship('category', 'name', 'parent_id', function ($query) {
-        return $query;
-    })
+    ->relationship('category', 'name', 'parent_id')
 ```
 
-Use the tree in your table filters. Here's an example to show you how.
-
-
-```bash
-use Filament\Tables\Filters\Filter;
-use Illuminate\Database\Eloquent\Builder;
-```
-
-```php
-->filters([
-    Filter::make('tree')
-        ->form([
-            SelectTree::make('categories')
-                ->relationship('categories', 'name', 'parent_id')
-                ->independent(false)
-                ->enableBranchNode(),
-        ])
-        ->query(function (Builder $query, array $data) {
-            return $query->when($data['categories'], function ($query, $categories) {
-                return $query->whereHas('categories', fn($query) => $query->whereIn('id', $categories));
-            });
-        })
-        ->indicateUsing(function (array $data): ?string {
-            if (! $data['categories']) {
-                return null;
-            }
-
-            return __('Categories') . ': ' . implode(', ', Category::whereIn('id', $data['categories'])->get()->pluck('name')->toArray());
-        })
-])
-```
+## Methods
 
 Set a custom placeholder when no items are selected
 
@@ -162,35 +126,46 @@ Disable specific options in the tree
 ->disabledOptions([2, 3, 4])
 ```
 
-```PHP
-->disabledOptions(function () {
-    return Category::where('is_disabled', true)
-        ->get()
-        ->pluck('id')
-        ->toArray();
-})
-
-```
 Hide specific options in the tree
 
 ```PHP
 ->hiddenOptions([2, 3, 4])
 ```
 
-```PHP
-->hiddenOptions(function () {
-    return Category::where('is_hidden', true)
-        ->get()
-        ->pluck('id')
-        ->toArray();
-})
+## Filters
+Use the tree in your table filters. Here's an example to show you how.
+
+```bash
+use Filament\Tables\Filters\Filter;
+use Illuminate\Database\Eloquent\Builder;
+use CodeWithDennis\FilamentSelectTree\SelectTree;
 ```
 
+```php
+->filters([
+    Filter::make('tree')
+        ->form([
+            SelectTree::make('categories')
+                ->relationship('categories', 'name', 'parent_id')
+                ->independent(false)
+                ->enableBranchNode(),
+        ])
+        ->query(function (Builder $query, array $data) {
+            return $query->when($data['categories'], function ($query, $categories) {
+                return $query->whereHas('categories', fn($query) => $query->whereIn('id', $categories));
+            });
+        })
+        ->indicateUsing(function (array $data): ?string {
+            if (! $data['categories']) {
+                return null;
+            }
 
+            return __('Categories') . ': ' . implode(', ', Category::whereIn('id', $data['categories'])->get()->pluck('name')->toArray());
+        })
+])
+```
 ## Screenshots
-
-<img width="641" alt="light" src="https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/4d348c85-5ee9-45b1-9424-0d8b3efcc02e">
-<img width="649" alt="dark" src="https://github.com/CodeWithDennis/filament-select-tree/assets/23448484/396627ff-bf36-44b7-b20c-0d32b2eff957">
+![download.png](./resources/images/example.png)
 
 ## Changelog
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
