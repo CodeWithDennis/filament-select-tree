@@ -9,7 +9,7 @@
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
-            wire:key="{{ rand() }}"
+            wire:key="{{ $this->getId() }}.{{ $getStatePath() }}.{{ $field::class }}.item"
             wire:ignore
             x-data
             x-load-css="[
