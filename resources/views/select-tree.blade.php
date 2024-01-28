@@ -9,8 +9,6 @@
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
-            wire:key="{{ rand() }}"
-            wire:ignore
             x-data
             x-load-css="[
         @js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree')),
@@ -18,10 +16,11 @@
         ]"
     >
         <div
-                x-ignore
+                wire:key="{{ $this->getId() }}.{{ $getStatePath() }}.{{ $field::class }}.item"
                 ax-load="visible"
                 ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree', package: 'codewithdennis/filament-select-tree') }}"
                 x-data="tree({
+                id: '{{ $this->getId() }}',
                 name: '{{ $getName() }}',
                 state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
                 options: {{ json_encode($getTree()) }},
@@ -52,7 +51,8 @@
                     :prefix-actions="$prefixActions"
                     :suffix-actions="$suffixActions"
             >
-                <div x-ref="tree"></div>
+{{--                <div x-ref="tree" wire:ignore.self></div>--}}
+                <div x-ref="tree" wire:ignore></div>
             </x-filament::input.wrapper>
         </div>
     </div>

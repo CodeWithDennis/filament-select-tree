@@ -2,6 +2,7 @@ import Treeselect from 'treeselectjs'
 
 export default function tree(
     {
+        id,
         state,
         name,
         options,
@@ -26,9 +27,11 @@ export default function tree(
         state,
         tree: null,
         init() {
+            console.log(`tree-${name}-id-${id}`);
+
             this.tree = new Treeselect({
-                id: `tree-${name}-id`,
-                ariaLabel: `tree-${name}-label`,
+                id: `tree-${name}-id-${id}`,
+                ariaLabel: `tree-${name}-label-${id}`,
                 parentHtmlContainer: this.$refs.tree,
                 value: this.state,
                 options,
