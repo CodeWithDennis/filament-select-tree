@@ -54,6 +54,7 @@ export default function tree(
             });
 
             this.tree.srcElement.addEventListener('input', (e) => {
+                console.log(e.detail);
                 this.state = e.detail;
             });
         }
