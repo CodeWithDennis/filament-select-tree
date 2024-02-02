@@ -37,7 +37,7 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $independent = true;
 
-    protected string $customKey = 'id';
+    protected string $customKey = null;
 
     protected string $titleAttribute;
 
@@ -360,7 +360,7 @@ class SelectTree extends Field implements HasAffixActions
     
     public function getCustomKey(): string
     {
-        return $this->evaluate($this->customKey);
+        return $this->customKey ? $this->evaluate($this->customKey) : $this->getKey();
     }
 
     public function getWithCount(): bool
