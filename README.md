@@ -132,6 +132,13 @@ Hide specific options in the tree
 ->hiddenOptions([2, 3, 4])
 ```
 
+Specify a different key for your model. 
+For example: you have id, code and parent_code. Your model uses id as key, but the parent-child relation is established between code and parent_code
+
+```PHP
+->withKey('code')
+```
+
 ## Filters
 Use the tree in your table filters. Here's an example to show you how.
 

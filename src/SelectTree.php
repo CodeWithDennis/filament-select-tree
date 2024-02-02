@@ -37,6 +37,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $independent = true;
 
+    protected string $customKey = 'id';
+
     protected string $titleAttribute;
 
     protected string $parentAttribute;
@@ -111,7 +113,7 @@ class SelectTree extends Field implements HasAffixActions
 
             $form->model($record)->saveRelationships();
 
-            return $record->getKey();
+            return $record->{$this->getCustomKey()};
         });
 
         $this->suffixActions([
@@ -184,18 +186,18 @@ class SelectTree extends Field implements HasAffixActions
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
-            'value' => $result->getKey(),
-            'disabled' => in_array($result->getKey(), $disabledOptions),
-            'hidden' => in_array($result->getKey(), $hiddenOptions),
+            'value' => $result->{$this->getCustomKey()},
+            'disabled' => in_array($result->{$this->getCustomKey()}, $disabledOptions),
+            'hidden' => in_array($result->{$this->getCustomKey()}, $hiddenOptions),
         ];
 
         // Check if the result has children
-        if (isset($resultMap[$result->getKey()])) {
+        if (isset($resultMap[$result->{$this->getCustomKey()}])) {
             $children = collect();
             // Recursively build child nodes
-            foreach ($resultMap[$result->getKey()] as $child) {
+            foreach ($resultMap[$result->{$this->getCustomKey()}] as $child) {
                 // don't add the hidden ones
-                if (in_array($child->getKey(), $hiddenOptions)) {
+                if (in_array($child->{$this->getCustomKey()}, $hiddenOptions)) {
                     continue;
                 }
                 $childNode = $this->buildNode($child, $resultMap, $disabledOptions, $hiddenOptions);
@@ -301,6 +303,13 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function withKey(string $customKey = 'id'): static
+    {
+        $this->customKey = $customKey;
+
+        return $this;
+    }
+
     public function disabledOptions(Closure|array $disabledOptions): static
     {
         $this->disabledOptions = $disabledOptions;
@@ -347,6 +356,11 @@ class SelectTree extends Field implements HasAffixActions
     public function getIndependent(): bool
     {
         return $this->evaluate($this->independent);
+    }
+    
+    public function getCustomKey(): string
+    {
+        return $this->evaluate($this->customKey);
     }
 
     public function getWithCount(): bool
