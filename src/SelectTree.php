@@ -357,7 +357,7 @@ class SelectTree extends Field implements HasAffixActions
     {
         return $this->evaluate($this->independent);
     }
-    
+
     public function getCustomKey(): string
     {
         return $this->customKey ? $this->evaluate($this->customKey) : $this->getKey();
