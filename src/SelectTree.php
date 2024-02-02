@@ -37,7 +37,7 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $independent = true;
 
-    protected string|null $customKey = null;
+    protected ?string $customKey = null;
 
     protected string $titleAttribute;
 
