@@ -189,6 +189,7 @@ class SelectTree extends Field implements HasAffixActions
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
             'value' => $key,
+            'parent' => $result->{$this->getParentAttribute()},
             'disabled' => in_array($key, $disabledOptions),
             'hidden' => in_array($key, $hiddenOptions),
         ];
