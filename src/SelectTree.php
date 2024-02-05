@@ -183,19 +183,21 @@ class SelectTree extends Field implements HasAffixActions
 
     private function buildNode($result, $resultMap, $disabledOptions, $hiddenOptions): array
     {
+        $key = $result->{$this->getCustomKey()};
+        
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
-            'value' => $result->{$this->getCustomKey()},
-            'disabled' => in_array($result->{$this->getCustomKey()}, $disabledOptions),
-            'hidden' => in_array($result->{$this->getCustomKey()}, $hiddenOptions),
+            'value' => $key,
+            'disabled' => in_array($key, $disabledOptions),
+            'hidden' => in_array($key, $hiddenOptions),
         ];
 
         // Check if the result has children
-        if (isset($resultMap[$result->{$this->getCustomKey()}])) {
+        if (isset($resultMap[$key])) {
             $children = collect();
             // Recursively build child nodes
-            foreach ($resultMap[$result->{$this->getCustomKey()}] as $child) {
+            foreach ($resultMap[$key] as $child) {
                 // don't add the hidden ones
                 if (in_array($child->{$this->getCustomKey()}, $hiddenOptions)) {
                     continue;
