@@ -113,7 +113,7 @@ class SelectTree extends Field implements HasAffixActions
 
             $form->model($record)->saveRelationships();
 
-            return $record->{$this->getCustomKey()};
+            return $this->getCustomKey($record);
         });
 
         $this->suffixActions([
@@ -183,8 +183,8 @@ class SelectTree extends Field implements HasAffixActions
 
     private function buildNode($result, $resultMap, $disabledOptions, $hiddenOptions): array
     {
-        $key = $result->{$this->getCustomKey()};
-        
+        $key = $this->getCustomKey($result);
+
         // Create a node with 'name' and 'value' attributes
         $node = [
             'name' => $result->{$this->getTitleAttribute()},
@@ -200,7 +200,7 @@ class SelectTree extends Field implements HasAffixActions
             // Recursively build child nodes
             foreach ($resultMap[$key] as $child) {
                 // don't add the hidden ones
-                if (in_array($child->{$this->getCustomKey()}, $hiddenOptions)) {
+                if (in_array($this->getCustomKey($child), $hiddenOptions)) {
                     continue;
                 }
                 $childNode = $this->buildNode($child, $resultMap, $disabledOptions, $hiddenOptions);
@@ -306,7 +306,7 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
-    public function withKey(string $customKey = 'id'): static
+    public function withKey(string $customKey): static
     {
         $this->customKey = $customKey;
 
@@ -360,10 +360,10 @@ class SelectTree extends Field implements HasAffixActions
     {
         return $this->evaluate($this->independent);
     }
-    
-    public function getCustomKey(): string
+
+    public function getCustomKey($record)
     {
-        return is_null($this->customKey) ? $this->getKey() : $this->evaluate($this->customKey);
+        return is_null($this->customKey) ? $record->getKey() : $record->{$this->customKey};
     }
 
     public function getWithCount(): bool
