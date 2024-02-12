@@ -75,6 +75,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected ?Closure $createOptionUsing = null;
 
+    protected Closure|bool|null $withTrashed = false;
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -133,8 +135,8 @@ class SelectTree extends Field implements HasAffixActions
         }
 
         // Fetch results for both queries
-        $nullParentResults = $nullParentQuery->get();
-        $nonNullParentResults = $nonNullParentQuery->get();
+        $nullParentResults = $nullParentQuery->withTrashed($this->withTrashed)->get();
+        $nonNullParentResults = $nonNullParentQuery->withTrashed($this->withTrashed)->get();
 
         // Combine the results from both queries
         $combinedResults = $nullParentResults->concat($nonNullParentResults);
@@ -226,6 +228,13 @@ class SelectTree extends Field implements HasAffixActions
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
+
+        return $this;
+    }
+
+    public function withTrashed(bool $withTrashed = true): static
+    {
+        $this->withTrashed = $withTrashed;
 
         return $this;
     }
@@ -354,6 +363,11 @@ class SelectTree extends Field implements HasAffixActions
     public function getGrouped(): bool
     {
         return $this->evaluate($this->grouped);
+    }
+
+    public function getWithTrashed(): bool
+    {
+        return $this->evaluate($this->withTrashed);
     }
 
     public function getIndependent(): bool
