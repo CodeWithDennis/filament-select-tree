@@ -132,6 +132,12 @@ Hide specific options in the tree
 ->hiddenOptions([2, 3, 4])
 ```
 
+Allow soft deleted items to be displayed
+
+```PHP
+->withTrashed()
+```
+
 Specify a different key for your model. 
 For example: you have id, code and parent_code. Your model uses id as key, but the parent-child relation is established between code and parent_code
 
