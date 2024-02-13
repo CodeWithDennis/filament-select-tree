@@ -134,7 +134,7 @@ class SelectTree extends Field implements HasAffixActions
             $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
         }
 
-        if($this->withTrashed) {
+        if ($this->withTrashed) {
             $nullParentQuery->withTrashed($this->withTrashed);
             $nonNullParentQuery->withTrashed($this->withTrashed);
         }
