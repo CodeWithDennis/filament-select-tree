@@ -134,9 +134,13 @@ class SelectTree extends Field implements HasAffixActions
             $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
         }
 
-        // Fetch results for both queries
-        $nullParentResults = $nullParentQuery->withTrashed($this->withTrashed)->get();
-        $nonNullParentResults = $nonNullParentQuery->withTrashed($this->withTrashed)->get();
+        if($this->withTrashed) {
+            $nullParentQuery->withTrashed($this->withTrashed);
+            $nonNullParentQuery->withTrashed($this->withTrashed);
+        }
+
+        $nullParentResults = $nullParentQuery->get();
+        $nonNullParentResults = $nonNullParentQuery->get();
 
         // Combine the results from both queries
         $combinedResults = $nullParentResults->concat($nonNullParentResults);
