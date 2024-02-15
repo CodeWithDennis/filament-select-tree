@@ -1,4 +1,7 @@
 @php
+    use Filament\Support\Facades\FilamentView;
+    use Filament\Support\Facades\FilamentAsset;
+
     $prefixLabel = $getPrefixLabel();
     $suffixLabel = $getSuffixLabel();
     $prefixIcon = $getPrefixIcon();
@@ -9,51 +12,47 @@
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
-            wire:key="{{ rand() }}"
-            wire:ignore
-            x-data
-            x-load-css="[
-        @js(\Filament\Support\Facades\FilamentAsset::getStyleHref('tree', package: 'codewithdennis/filament-select-tree')),
-        @js(\Filament\Support\Facades\FilamentAsset::getStyleHref('custom', package: 'codewithdennis/filament-select-tree'))
-        ]"
+        wire:ignore
+        x-ignore
+        @if (FilamentView::hasSpaMode())
+            ax-load="visible"
+        @else
+            ax-load
+        @endif
+        ax-load-css="{{ FilamentAsset::getStyleHref('filament-select-tree-styles', package: 'codewithdennis/filament-select-tree') }}"
+        ax-load-src="{{ FilamentAsset::getAlpineComponentSrc('filament-select-tree', package: 'codewithdennis/filament-select-tree') }}"
+        x-data="selectTree({
+            name: @js($getName()),
+            state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
+            options: @js($getTree()),
+            searchable: @js($isSearchable()),
+            showCount: @js($getWithCount()),
+            placeholder: @js($getPlaceholder()),
+            disabledBranchNode: @js(!$getEnableBranchNode()),
+            disabled: @js($isDisabled()),
+            isSingleSelect: @js(!$getMultiple()),
+            isIndependentNodes: @js($getIndependent()),
+            showTags: @js($getMultiple()),
+            alwaysOpen: @js($getAlwaysOpen()),
+            clearable: @js($getClearable()),
+            emptyText: @js($getEmptyLabel()),
+            expandSelected: @js($getExpandSelected()),
+            grouped: @js($getGrouped()),
+            openLevel: @js($getDefaultOpenLevel()),
+            direction: @js($getDirection()),
+            rtl: @js(__('filament-panels::layout.direction') === 'rtl'),
+        })"
     >
-        <div
-                x-ignore
-                ax-load="visible"
-                ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree', package: 'codewithdennis/filament-select-tree') }}"
-                x-data="tree({
-                name: '{{ $getName() }}',
-                state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }},
-                options: {{ json_encode($getTree()) }},
-                searchable: '{{ $isSearchable() }}',
-                showCount: '{{ $getWithCount() }}',
-                placeholder: '{{ $getPlaceholder() }}',
-                disabledBranchNode: '{{ !$getEnableBranchNode() }}',
-                disabled: '{{ $isDisabled() }}',
-                isSingleSelect: '{{ !$getMultiple() }}',
-                isIndependentNodes: '{{ $getIndependent() }}',
-                showTags: '{{ $getMultiple() }}',
-                alwaysOpen: '{{ $getAlwaysOpen() }}',
-                clearable: '{{ $getClearable() }}',
-                emptyText: '{{ $getEmptyLabel() }}',
-                expandSelected: '{{ $getExpandSelected() }}',
-                grouped: '{{ $getGrouped() }}',
-                openLevel: '{{ $getDefaultOpenLevel() }}',
-                direction: '{{ $getDirection() }}',
-                rtl: '{{ __('filament-panels::layout.direction') === 'rtl' }}'
-            })"
+        <x-filament::input.wrapper
+            :suffix="$suffixLabel"
+            :prefix="$prefixLabel"
+            :prefix-icon="$prefixIcon"
+            :suffix-icon="$suffixIcon"
+            :disabled="$isDisabled()"
+            :prefix-actions="$prefixActions"
+            :suffix-actions="$suffixActions"
         >
-            <x-filament::input.wrapper
-                    :suffix="$suffixLabel"
-                    :prefix="$prefixLabel"
-                    :prefix-icon="$prefixIcon"
-                    :suffix-icon="$suffixIcon"
-                    :disabled="$isDisabled()"
-                    :prefix-actions="$prefixActions"
-                    :suffix-actions="$suffixActions"
-            >
-                <div x-ref="tree"></div>
-            </x-filament::input.wrapper>
-        </div>
+            <div x-ref="tree"></div>
+        </x-filament::input.wrapper>
     </div>
 </x-dynamic-component>

@@ -2,9 +2,9 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "dev:styles": "postcss resources/css/tree.css -o resources/dist/tree.css && postcss resources/css/custom.css -o resources/dist/custom.css --watch",
+        "dev:styles": "postcss resources/css/index.css -o resources/dist/filament-select-tree.css --watch",
         "dev:scripts": "node bin/build.js --dev",
-        "build:styles": "postcss resources/css/tree.css -o resources/dist/tree.css && postcss resources/css/custom.css -o resources/dist/custom.css",
+        "build:styles": "postcss resources/css/index.css -o resources/dist/filament-select-tree.css",
         "build:scripts": "node bin/build.js",
         "dev": "npm-run-all --parallel dev:*",
         "build": "npm-run-all build:*"
@@ -15,7 +15,8 @@
         "npm-run-all": "^4.1.5",
         "postcss": "^8.4.31",
         "postcss-cli": "^10.1.0",
-        "postcss-nesting": "^12.0.0"
+        "postcss-import": "^16.0.1",
+        "postcss-nesting": "^12.0.2"
     },
     "dependencies": {
         "treeselectjs": "^0.10.0"
