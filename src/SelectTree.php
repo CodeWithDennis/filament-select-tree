@@ -115,16 +115,16 @@ class SelectTree extends Field implements HasAffixActions
 
             // Check if the component's relationship is a BelongsTo relationship.
             if ($relationship instanceof BelongsTo) {
-               $relationship->associate($state)->save();
+                $relationship->associate($state)->save();
 
-               return;
+                return;
             }
 
-             // Wrap the state in a collection and convert it to an array if it's not set.
-             $state = Collection::wrap($state ?? []);
+            // Wrap the state in a collection and convert it to an array if it's not set.
+            $state = Collection::wrap($state ?? []);
 
-             // Sync the relationship with the provided state (IDs).
-             $component->getRelationship()->sync($state->toArray());
+            // Sync the relationship with the provided state (IDs).
+            $component->getRelationship()->sync($state->toArray());
         });
 
         $this->createOptionUsing(static function (SelectTree $component, array $data, Form $form) {
