@@ -134,7 +134,7 @@ class SelectTree extends Field implements HasAffixActions
 
             $form->model($record)->saveRelationships();
 
-            return $this->getCustomKey($record);
+            return $component->getCustomKey($record);
         });
 
         $this->suffixActions([
