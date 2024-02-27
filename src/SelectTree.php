@@ -121,8 +121,6 @@ class SelectTree extends Field implements HasAffixActions
         $this->suffixActions([
             static fn (SelectTree $component): ?Action => $component->getCreateOptionAction(),
         ]);
-
-        $this->dehydrated(false);
     }
 
     private function buildTree(): Collection
