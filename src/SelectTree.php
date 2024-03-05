@@ -10,6 +10,7 @@ use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasActions;
 use Filament\Forms\Components\Concerns\HasAffixes;
+use Filament\Forms\Components\Concerns\HasPivotData;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Contracts\HasAffixActions;
 use Filament\Forms\Components\Field;
@@ -26,6 +27,7 @@ class SelectTree extends Field implements HasAffixActions
     use HasActions;
     use HasAffixes;
     use HasPlaceholder;
+    use HasPivotData;
 
     protected string $view = 'select-tree::select-tree';
 
@@ -102,6 +104,12 @@ class SelectTree extends Field implements HasAffixActions
             if ($component->getRelationship() instanceof BelongsToMany) {
                 // Wrap the state in a collection and convert it to an array if it's not set.
                 $state = Collection::wrap($state ?? []);
+
+                if($pivotData = $component->getPivotData()) {
+                    $component->getRelationship()->syncWithPivotValues($state->toArray(), $pivotData);
+                    
+                    return;
+                }
 
                 // Sync the relationship with the provided state (IDs).
                 $component->getRelationship()->sync($state->toArray());
