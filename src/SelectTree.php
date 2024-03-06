@@ -27,8 +27,8 @@ class SelectTree extends Field implements HasAffixActions
     use CanBeSearchable;
     use HasActions;
     use HasAffixes;
-    use HasPlaceholder;
     use HasPivotData;
+    use HasPlaceholder;
 
     protected string $view = 'select-tree::select-tree';
 
@@ -111,7 +111,7 @@ class SelectTree extends Field implements HasAffixActions
                 // Sync the relationship with the provided state (IDs).
                 if ($pivotData === []) {
                     $component->getRelationship()->sync($state ?? []);
-    
+
                     return;
                 }
 
