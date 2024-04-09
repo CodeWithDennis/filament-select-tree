@@ -148,8 +148,9 @@ class SelectTree extends Field implements HasAffixActions
             $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
         }
 
-        // If we're at the child level and a modification callback is provided, apply it to non null query
+        // If a modification callback is provided, apply it to both querys
         if ($this->modifyChildQueryUsing) {
+            $nullParentQuery = $this->evaluate($this->modifyChildQueryUsing, ['query' => $nullParentQuery]);
             $nonNullParentQuery = $this->evaluate($this->modifyChildQueryUsing, ['query' => $nonNullParentQuery]);
         }
 
