@@ -12,7 +12,7 @@
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
-        wire:key="{{ rand() }}"
+        wire:key="{{ $getId() }}"
         wire:ignore
         x-ignore
         @if (FilamentView::hasSpaMode())
