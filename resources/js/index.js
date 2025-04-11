@@ -1,5 +1,8 @@
 import Treeselect from 'treeselectjs'
 
+// Store treeselect instances globally
+window.treeselectInstances = window.treeselectInstances || {};
+
 export default function selectTree({
     state,
     name,
@@ -23,16 +26,19 @@ export default function selectTree({
 }) {
     return {
         state,
-
-        /** @type Treeselect */
-        tree: null,
+        initialized: false,
+        instanceId: null,
 
         init() {
-            this.tree = new Treeselect({
-                id: `tree-${name}-id`,
-                ariaLabel: `tree-${name}-label`,
+            // Generate a unique instance ID
+            this.instanceId = `${name}-${Math.random().toString(36).substring(2, 11)}`;
+
+            // Initialize treeselect
+            const tree = new Treeselect({
+                id: `tree-${this.instanceId}-id`,
+                ariaLabel: `tree-${this.instanceId}-label`,
                 parentHtmlContainer: this.$refs.tree,
-                value: this.state,
+                value: Array.isArray(this.state) ? this.state : [this.state],
                 options,
                 searchable,
                 showCount,
@@ -52,8 +58,23 @@ export default function selectTree({
                 rtl
             });
 
-            this.tree.srcElement.addEventListener('input', (e) => {
+            window.treeselectInstances[this.instanceId] = tree;
+
+            tree.srcElement.addEventListener('input', (e) => {
                 this.state = e.detail;
+            });
+
+            this.initialized = true;
+
+            this.$watch('state', (newValue) => {
+                if (this.initialized && window.treeselectInstances[this.instanceId]) {
+                    const tree = window.treeselectInstances[this.instanceId];
+                    if (!newValue || (Array.isArray(newValue) && newValue.length === 0)) {
+                        tree.updateValue([]);
+                    } else {
+                        tree.updateValue(Array.isArray(newValue) ? newValue : [newValue]);
+                    }
+                }
             });
         }
     }
