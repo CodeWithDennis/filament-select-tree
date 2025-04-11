@@ -114,6 +114,29 @@ Specify the list's force direction. Options include: auto (default), top, and bo
 ->direction('top')
 ```
 
+Customize how the tree is built with a custom callback function
+
+```php
+->getTreeUsing(function () {
+    // Build and return your custom tree structure as a Collection
+    return collect([
+        [
+            'name' => 'Custom Category 1',
+            'value' => 1,
+            'parent' => null,
+            'children' => [
+                [
+                    'name' => 'Subcategory 1.1',
+                    'value' => 2,
+                    'parent' => 1,
+                    'children' => []
+                ]
+            ]
+        ]
+    ]);
+})
+```
+
 Display individual leaf nodes instead of the main group when all leaf nodes are selected
 
 ```php

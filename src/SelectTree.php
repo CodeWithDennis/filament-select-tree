@@ -88,6 +88,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected Closure|array|null $prepend = null;
 
+    protected ?Closure $getTreeUsing = null;
+
     protected function setUp(): void
     {
         // Load the state from relationships using a callback function.
@@ -149,6 +151,10 @@ class SelectTree extends Field implements HasAffixActions
 
     protected function buildTree(): Collection
     {
+        if ($this->getTreeUsing) {
+            return $this->evaluate($this->getTreeUsing);
+        }
+
         // Start with two separate query builders
         $nullParentQuery = $this->getRelationship()->getRelated()->query()->where($this->getParentAttribute(), $this->getParentNullValue());
         $nonNullParentQuery = $this->getRelationship()->getRelated()->query()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
@@ -418,7 +424,7 @@ class SelectTree extends Field implements HasAffixActions
 
     public function getResults(): Collection|array|null
     {
-        return $this->evaluate($this->results);
+        return $this->results;
     }
 
     public function getExpandSelected(): bool
@@ -611,6 +617,13 @@ class SelectTree extends Field implements HasAffixActions
     public function createOptionModalHeading(string|Closure|null $heading): static
     {
         $this->createOptionModalHeading = $heading;
+
+        return $this;
+    }
+
+    public function getTreeUsing(?Closure $callback): static
+    {
+        $this->getTreeUsing = $callback;
 
         return $this;
     }
