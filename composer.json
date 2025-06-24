@@ -21,13 +21,13 @@
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "filament/forms": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0",
         "illuminate/contracts": "^10.0|^11.0|^12.0"
     },
     "require-dev": {
-        "nunomaduro/collision": "^7.9",
+        "nunomaduro/collision": "^7.9||^8.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
         "pestphp/pest": "^2.0|^3.7",
         "pestphp/pest-plugin-arch": "^2.0|^3.0",
@@ -62,6 +62,6 @@
             ]
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "beta",
     "prefer-stable": true
 }
