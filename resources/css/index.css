@@ -107,13 +107,13 @@ html.dark .treeselect > .treeselect-input {
 .treeselect-list.treeselect-list--single-select
     .treeselect-list__item--single-selected {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--gray-50), var(--tw-bg-opacity)) !important;
+    background-color: var(--gray-50) !important;
 }
 
 .treeselect-list__item:hover,
 .treeselect-list__item--focused {
     --tw-bg-opacity: 1;
-    background-color: rgba(var(--gray-50), var(--tw-bg-opacity)) !important;
+    background-color: var(--gray-50) !important;
 }
 
 .treeselect-list.treeselect-list--single-select
@@ -122,15 +122,15 @@ html.dark .treeselect > .treeselect-input {
 }
 
 html.dark .treeselect-list {
-    -tw-bg-opacity: 1;
+    --tw-bg-opacity: 1;
     --tw-ring-color: hsla(0, 0%, 100%, 0.1);
-    background-color: rgba(var(--gray-900), var(--tw-bg-opacity));
+    background-color: var(--gray-900);
 }
 
 html.dark .treeselect-list {
-    -tw-bg-opacity: 1;
+    --tw-bg-opacity: 1;
     --tw-ring-color: hsla(0, 0%, 100%, 0.1);
-    background-color: rgba(var(--gray-900), var(--tw-bg-opacity));
+    background-color: var(--gray-900);
 }
 
 .treeselect-input__edit {

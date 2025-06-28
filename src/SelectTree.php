@@ -2,19 +2,19 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
+use Filament\Schemas\Components\Contracts\HasAffixActions;
+use Filament\Schemas\Components\Concerns\CanBeDisabled;
+use Filament\Schemas\Components\Concerns\HasActions;
+use Filament\Schemas\Schema;
+use Filament\Actions\Action;
+use InvalidArgumentException;
 use Closure;
 use Exception;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\Concerns\CanBeDisabled;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
-use Filament\Forms\Components\Concerns\HasActions;
 use Filament\Forms\Components\Concerns\HasAffixes;
 use Filament\Forms\Components\Concerns\HasPivotData;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
-use Filament\Forms\Components\Contracts\HasAffixActions;
 use Filament\Forms\Components\Field;
-use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -130,12 +130,12 @@ class SelectTree extends Field implements HasAffixActions
             }
         });
 
-        $this->createOptionUsing(static function (SelectTree $component, array $data, Form $form) {
+        $this->createOptionUsing(static function (SelectTree $component, array $data, Schema $schema) {
             $record = $component->getRelationship()->getRelated();
             $record->fill($data);
             $record->save();
 
-            $form->model($record)->saveRelationships();
+            $schema->model($record)->saveRelationships();
 
             return $component->getCustomKey($record);
         });
@@ -310,7 +310,7 @@ class SelectTree extends Field implements HasAffixActions
         if (is_array($this->prepend) && isset($this->prepend['name'], $this->prepend['value'])) {
             $this->prepend['value'] = (string) $this->prepend['value'];
         } else {
-            throw new \InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
+            throw new InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
         }
 
         return $this;
@@ -510,9 +510,9 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate($this->hiddenOptions);
     }
 
-    public function getCreateOptionActionForm(Form $form): array|Form|null
+    public function getCreateOptionActionForm(Schema $schema): array|Schema|null
     {
-        return $this->evaluate($this->createOptionActionForm, ['form' => $form]);
+        return $this->evaluate($this->createOptionActionForm, ['form' => $schema]);
     }
 
     public function hasCreateOptionActionFormSchema(): bool
@@ -560,19 +560,19 @@ class SelectTree extends Field implements HasAffixActions
         }
 
         $action = Action::make($this->getCreateOptionActionName())
-            ->form(function (SelectTree $component, Form $form): array|Form|null {
-                return $component->getCreateOptionActionForm($form->model(
+            ->schema(function (SelectTree $component, Schema $schema): array|Schema|null {
+                return $component->getCreateOptionActionForm($schema->model(
                     $component->getRelationship() ? $component->getRelationship()->getModel()::class : null,
                 ));
             })
-            ->action(static function (Action $action, array $arguments, SelectTree $component, array $data, ComponentContainer $form) {
+            ->action(static function (Action $action, array $arguments, SelectTree $component, array $data, Schema $schema) {
                 if (! $component->getCreateOptionUsing()) {
                     throw new Exception("Select field [{$component->getStatePath()}] must have a [createOptionUsing()] closure set.");
                 }
 
                 $createdOptionKey = $component->evaluate($component->getCreateOptionUsing(), [
                     'data' => $data,
-                    'form' => $form,
+                    'form' => $schema,
                 ]);
 
                 $state = $component->getMultiple()
@@ -591,7 +591,7 @@ class SelectTree extends Field implements HasAffixActions
 
                 $action->callAfter();
 
-                $form->fill();
+                $schema->fill();
 
                 $action->halt();
             })
