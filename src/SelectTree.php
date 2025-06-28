@@ -2,24 +2,24 @@
 
 namespace CodeWithDennis\FilamentSelectTree;
 
-use Filament\Schemas\Components\Contracts\HasAffixActions;
-use Filament\Schemas\Components\Concerns\CanBeDisabled;
-use Filament\Schemas\Components\Concerns\HasActions;
-use Filament\Schemas\Schema;
-use Filament\Actions\Action;
-use InvalidArgumentException;
 use Closure;
 use Exception;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Concerns\CanBeSearchable;
 use Filament\Forms\Components\Concerns\HasAffixes;
 use Filament\Forms\Components\Concerns\HasPivotData;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Concerns\CanBeDisabled;
+use Filament\Schemas\Components\Concerns\HasActions;
+use Filament\Schemas\Components\Contracts\HasAffixActions;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 class SelectTree extends Field implements HasAffixActions
 {
