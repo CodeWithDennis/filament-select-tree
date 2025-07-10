@@ -223,6 +223,25 @@ use CodeWithDennis\FilamentSelectTree\SelectTree;
 ])
 ```
 
+If you need to append an item to the tree menu, use the `append` method. This method also accepts an array or a closure.
+
+```php
+->schema([
+    SelectTree::make('category')
+        ->relationship('categories', 'name', 'parent_id')
+        ->enableBranchNode()
+        ->multiple(false)
+        ->append([
+            'name' => 'Uncategorized Records',
+            'value' => -1,
+            'parent' => null, // optional
+            'disabled' => false, // optional
+            'hidden' => false, // optional
+            'children' => [], // optional
+            ])
+    ])
+```
+
 ## Filters
 
 Use the tree in your table filters. Here's an example to show you how.
