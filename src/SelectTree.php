@@ -88,6 +88,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected Closure|array|null $prepend = null;
 
+    protected Closure|array|null $append = null;
+
     protected Closure|string|null $treeKey = 'treeKey';
 
     protected function setUp(): void
@@ -311,6 +313,19 @@ class SelectTree extends Field implements HasAffixActions
             $this->prepend['value'] = (string) $this->prepend['value'];
         } else {
             throw new \InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
+        }
+
+        return $this;
+    }
+
+    public function append(Closure|array|null $append = null): static
+    {
+        $this->append = $this->evaluate($append);
+
+        if (is_array($this->append) && isset($this->append['name'], $this->append['value'])) {
+            $this->append['value'] = (string) $this->append['value'];
+        } else {
+            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
         }
 
         return $this;
