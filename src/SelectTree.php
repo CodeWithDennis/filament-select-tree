@@ -438,12 +438,8 @@ class SelectTree extends Field implements HasAffixActions
     public function getTree(): Collection|array
     {
         return $this->evaluate($this->buildTree()
-            ->when($this->prepend,
-            fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend))
-            )
-            ->when($this->append,
-            fn(Collection $tree) => $tree->push($this->evaluate($this->append))
-            )
+            ->when($this->prepend, fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend)))
+            ->when($this->append, fn(Collection $tree) => $tree->push($this->evaluate($this->append)))
         );
     }
 
