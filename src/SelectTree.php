@@ -88,6 +88,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected Closure|array|null $prepend = null;
 
+    protected Closure|array|null $append = null;
+
     protected Closure|string|null $treeKey = 'treeKey';
 
     protected function setUp(): void
@@ -316,6 +318,19 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function append(Closure|array|null $append = null): static
+    {
+        $this->append = $this->evaluate($append);
+
+        if (is_array($this->append) && isset($this->append['name'], $this->append['value'])) {
+            $this->append['value'] = (string) $this->append['value'];
+        } else {
+            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
+        }
+
+        return $this;
+    }
+
     public function getRelationship(): BelongsToMany|BelongsTo
     {
         return $this->getModelInstance()->{$this->evaluate($this->relationship)}();
@@ -422,8 +437,10 @@ class SelectTree extends Field implements HasAffixActions
 
     public function getTree(): Collection|array
     {
-        return $this->evaluate($this->buildTree()->when($this->prepend,
-            fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend))));
+        return $this->evaluate($this->buildTree()
+            ->when($this->prepend, fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend)))
+            ->when($this->append, fn (Collection $tree) => $tree->push($this->evaluate($this->append)))
+        );
     }
 
     public function getResults(): Collection|array|null
