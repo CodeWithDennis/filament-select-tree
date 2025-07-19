@@ -238,7 +238,7 @@ If you need to append an item to the tree menu, use the `append` method. This me
             'disabled' => false, // optional
             'hidden' => false, // optional
             'children' => [], // optional
-            ])
+        ])
     ])
 ```
 
