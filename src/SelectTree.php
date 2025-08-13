@@ -94,6 +94,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         // Load the state from relationships using a callback function.
         $this->loadStateFromRelationshipsUsing(static function (self $component): void {
             // Get the current relationship associated with the component.
