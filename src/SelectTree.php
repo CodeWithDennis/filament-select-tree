@@ -313,6 +313,7 @@ class SelectTree extends Field implements HasAffixActions
 
         if (is_array($this->prepend) && isset($this->prepend['name'], $this->prepend['value'])) {
             $this->prepend['value'] = (string) $this->prepend['value'];
+        } else if (is_null($this->prepend)){
         } else {
             throw new InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
         }
@@ -326,6 +327,7 @@ class SelectTree extends Field implements HasAffixActions
 
         if (is_array($this->append) && isset($this->append['name'], $this->append['value'])) {
             $this->append['value'] = (string) $this->append['value'];
+        } else if (is_null($this->append)) {
         } else {
             throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
         }
