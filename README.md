@@ -38,6 +38,15 @@ SelectTree::make('category_id')
     ->relationship('category', 'name', 'parent_id')
 ```
 
+## Usage without relationships
+
+Use the tree without relationship
+
+```php
+SelectTree::make('category_id')
+    ->query(fn() => Category::query(), 'name', 'parent_id')
+```
+
 ## Custom Query
 
 Customize the parent query

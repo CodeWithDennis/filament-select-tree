@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Concerns\HasActions;
 use Filament\Schemas\Components\Contracts\HasAffixActions;
 use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
@@ -54,11 +55,13 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $grouped = true;
 
-    protected string|Closure $relationship;
+    protected Closure|Builder|null $query = null;
 
-    protected ?Closure $modifyQueryUsing;
+    protected string|Closure|null $relationship = null;
 
-    protected ?Closure $modifyChildQueryUsing;
+    protected ?Closure $modifyQueryUsing = null;
+
+    protected ?Closure $modifyChildQueryUsing = null;
 
     protected Closure|int $defaultOpenLevel = 0;
 
@@ -158,8 +161,8 @@ class SelectTree extends Field implements HasAffixActions
     protected function buildTree(): Collection
     {
         // Start with two separate query builders
-        $nullParentQuery = $this->getRelationship()->getRelated()->query()->where($this->getParentAttribute(), $this->getParentNullValue());
-        $nonNullParentQuery = $this->getRelationship()->getRelated()->query()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
+        $nullParentQuery = $this->getQuery()->clone()->where($this->getParentAttribute(), $this->getParentNullValue());
+        $nonNullParentQuery = $this->getQuery()->clone()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
 
         // If we're not at the root level and a modification callback is provided, apply it to null query
         if ($this->modifyQueryUsing) {
@@ -272,6 +275,17 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function query(Builder|Closure|null $query, string $titleAttribute, string $parentAttribute, ?Closure $modifyQueryUsing = null, ?Closure $modifyChildQueryUsing = null): static
+    {
+        $this->query = $query;
+        $this->titleAttribute = $titleAttribute;
+        $this->parentAttribute = $parentAttribute;
+        $this->modifyQueryUsing = $modifyQueryUsing;
+        $this->modifyChildQueryUsing = $modifyChildQueryUsing;
+
+        return $this;
+    }
+
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
@@ -333,9 +347,21 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
-    public function getRelationship(): BelongsToMany|BelongsTo
+    public function getRelationship(): BelongsToMany|BelongsTo|null
     {
+        if (is_null($this->relationship)) {
+            return null;
+        }
         return $this->getModelInstance()->{$this->evaluate($this->relationship)}();
+    }
+
+    public function getQuery(): ?Builder
+    {
+        if (! is_null($this->query)) {
+            return $this->evaluate($this->query);
+        }
+
+        return $this->getRelationship()->getRelated()->query();
     }
 
     public function getTitleAttribute(): string
