@@ -329,7 +329,7 @@ class SelectTree extends Field implements HasAffixActions
         if (is_array($this->append) && isset($this->append['name'], $this->append['value'])) {
             $this->append['value'] = (string) $this->append['value'];
         } else if (is_null($this->append)) {
-            # Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
+            // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
         } else {
             throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
         }
