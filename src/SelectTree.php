@@ -160,14 +160,29 @@ class SelectTree extends Field implements HasAffixActions
 
     protected function buildTree(): Collection
     {
-        // Start with two separate query builders
+        // If we have a modifyQueryUsing callback, use a single query approach
+        // This handles filtered queries that might not fit the standard null/non-null parent structure
+        if ($this->modifyQueryUsing) {
+            $query = $this->getQuery()->clone();
+            $query = $this->evaluate($this->modifyQueryUsing, ['query' => $query]);
+            
+            if ($this->withTrashed) {
+                $query->withTrashed($this->withTrashed);
+            }
+            
+            $results = $query->get();
+            
+            // Store results for additional functionality
+            if ($this->storeResults) {
+                $this->results = $results;
+            }
+            
+            return $this->buildTreeFromResults($results);
+        }
+        
+        // Original logic for non-filtered queries
         $nullParentQuery = $this->getQuery()->clone()->where($this->getParentAttribute(), $this->getParentNullValue());
         $nonNullParentQuery = $this->getQuery()->clone()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
-
-        // If we're not at the root level and a modification callback is provided, apply it to null query
-        if ($this->modifyQueryUsing) {
-            $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
-        }
 
         // If we're at the child level and a modification callback is provided, apply it to non null query
         if ($this->modifyChildQueryUsing) {
