@@ -160,29 +160,14 @@ class SelectTree extends Field implements HasAffixActions
 
     protected function buildTree(): Collection
     {
-        // If we have a modifyQueryUsing callback, use a single query approach
-        // This handles filtered queries that might not fit the standard null/non-null parent structure
-        if ($this->modifyQueryUsing) {
-            $query = $this->getQuery()->clone();
-            $query = $this->evaluate($this->modifyQueryUsing, ['query' => $query]);
-
-            if ($this->withTrashed) {
-                $query->withTrashed($this->withTrashed);
-            }
-
-            $results = $query->get();
-
-            // Store results for additional functionality
-            if ($this->storeResults) {
-                $this->results = $results;
-            }
-
-            return $this->buildTreeFromResults($results);
-        }
-
-        // Original logic for non-filtered queries
+        // Start with two separate query builders
         $nullParentQuery = $this->getQuery()->clone()->where($this->getParentAttribute(), $this->getParentNullValue());
         $nonNullParentQuery = $this->getQuery()->clone()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
+
+        // If we're not at the root level and a modification callback is provided, apply it to null query
+        if ($this->modifyQueryUsing) {
+            $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
+        }
 
         // If we're at the child level and a modification callback is provided, apply it to non null query
         if ($this->modifyChildQueryUsing) {
@@ -238,23 +223,10 @@ class SelectTree extends Field implements HasAffixActions
 
         // Recursively build the tree starting from the root (null parent)
         $rootResults = $resultMap[$parent] ?? [];
-
-        // If we have no root results but we have results, and we're using modifyQueryUsing,
-        // it means the query was filtered and might not have proper root items.
-        // In this case, show all results as root items to prevent empty trees.
-        if (empty($rootResults) && ! empty($results) && $this->modifyQueryUsing) {
-            foreach ($results as $result) {
-                // Build a node and add it to the tree
-                $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
-                $tree->push($node);
-            }
-        } else {
-            // Normal tree building - only show items that are actually root items
-            foreach ($rootResults as $result) {
-                // Build a node and add it to the tree
-                $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
-                $tree->push($node);
-            }
+        foreach ($rootResults as $result) {
+            // Build a node and add it to the tree
+            $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
+            $tree->push($node);
         }
 
         return $tree;
