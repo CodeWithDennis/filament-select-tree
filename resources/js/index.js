@@ -28,13 +28,19 @@ export default function selectTree({
         tree: null,
 
         formatState: function (state) {
+            if (isSingleSelect && Array.isArray(state)) {
+                state = state[0]
+            }
+            if (!isSingleSelect && !Array.isArray(state)) {
+                state = [state]
+            }
             if (Array.isArray(state)) {
                 return (state ?? []).map((item) => item?.toString())
             }
 
             return state?.toString()
         },
-        
+
 
         init() {
             this.tree = new Treeselect({
