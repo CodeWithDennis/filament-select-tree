@@ -206,29 +206,55 @@ class SelectTree extends Field implements HasAffixActions
         // Create a mapping of results by their parent IDs for faster lookup
         $resultMap = [];
 
+        // Create a cache of IDs
+        $resultCache = [];
+
         // Group results by their parent IDs
         foreach ($results as $result) {
-            $parentId = $result->{$this->getParentAttribute()};
-            if (! isset($resultMap[$parentId])) {
-                $resultMap[$parentId] = [];
+            // Cache the result ID as seen
+            $resultCache[$result->id]['in_set'] = 1;
+            // Move any cached children to the result map
+            if(isset($resultCache[$result->id]['children'])){
+                $resultMap[$result->id] = array_merge($resultMap[$result->id], $resultCache[$result->id]['children']);
+                unset($resultCache[$result->id]['children']);
             }
-            $resultMap[$parentId][] = $result;
+            $parentId = $result->{$this->getParentAttribute()};
+            if (! isset($resultCache[$parentId])) {
+                // Before adding results to the map, cache the parentId to hold until the parent is confirmed to be in the result set
+                $resultCache[$parentId]['in_set'] = 0;
+                $resultCache[$parentId]['children'] = [];
+            }
+            if($resultCache[$parentId]['in_set']){
+                // if the parent has been confirmed to be in the set, add directly to result map
+                $resultMap[$parentId][] = $result;
+            } else {
+                // otherwise, hold the result in the children cache until the parent is confirmed to be in the result set
+                $resultCache[$parentId]['children'][] = $result;
+            }
         }
+
+        // Filter the cache for missing parents in the result set and get the children
+        $orphanedResults = array_map(
+            fn($item) => $item['children'],
+            array_filter(
+                $resultCache,
+                fn($item) => !$item['in_set']
+            )
+        );
+
+        // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
+        $resultMap[$parent] = array_merge(...array_values($orphanedResults));
+
+        debug($resultMap);
+
+        // Recursively build the tree starting from the root (null parent)
+        $rootResults = $resultMap[$parent] ?? [];
 
         // Define disabled options
         $disabledOptions = $this->getDisabledOptions();
 
         // Define hidden options
         $hiddenOptions = $this->getHiddenOptions();
-
-        // Recursively build the tree starting from the root (null parent)
-        $rootResults = $resultMap[$parent] ?? [];
-
-        // If a modified parent query yields no root results, iterate over the whole map instead
-        if($this->modifyQueryUsing && empty($rootResults)) {
-            // Go one layer deeper to access the results
-            $rootResults = array_merge(...array_values($resultMap));
-        }
 
         foreach ($rootResults as $result) {
             // Build a node and add it to the tree
