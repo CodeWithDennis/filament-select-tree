@@ -211,25 +211,26 @@ class SelectTree extends Field implements HasAffixActions
 
         // Group results by their parent IDs
         foreach ($results as $result) {
-            // Cache the result ID as seen
-            $resultCache[$result->id]['in_set'] = 1;
+            // Cache the result as seen
+            $resultKey = $this->getCustomKey($result);
+            $resultCache[$resultKey]['in_set'] = 1;
             // Move any cached children to the result map
-            if(isset($resultCache[$result->id]['children'])){
-                $resultMap[$result->id] = array_merge($resultMap[$result->id], $resultCache[$result->id]['children']);
-                unset($resultCache[$result->id]['children']);
+            if(isset($resultCache[$resultKey]['children'])){
+                $resultMap[$resultKey] = array_merge($resultMap[$resultKey], $resultCache[$resultKey]['children']);
+                unset($resultCache[$resultKey]['children']);
             }
-            $parentId = $result->{$this->getParentAttribute()};
-            if (! isset($resultCache[$parentId])) {
+            $parentKey = $result->{$this->getParentAttribute()};
+            if (! isset($resultCache[$parentKey])) {
                 // Before adding results to the map, cache the parentId to hold until the parent is confirmed to be in the result set
-                $resultCache[$parentId]['in_set'] = 0;
-                $resultCache[$parentId]['children'] = [];
+                $resultCache[$parentKey]['in_set'] = 0;
+                $resultCache[$parentKey]['children'] = [];
             }
-            if($resultCache[$parentId]['in_set']){
+            if($resultCache[$parentKey]['in_set']){
                 // if the parent has been confirmed to be in the set, add directly to result map
-                $resultMap[$parentId][] = $result;
+                $resultMap[$parentKey][] = $result;
             } else {
                 // otherwise, hold the result in the children cache until the parent is confirmed to be in the result set
-                $resultCache[$parentId]['children'][] = $result;
+                $resultCache[$parentKey]['children'][] = $result;
             }
         }
 
