@@ -223,6 +223,13 @@ class SelectTree extends Field implements HasAffixActions
 
         // Recursively build the tree starting from the root (null parent)
         $rootResults = $resultMap[$parent] ?? [];
+
+        // If a modified parent query yields no root results, iterate over the whole map instead
+        if($this->modifyQueryUsing && empty($rootResults)) {
+            // Go one layer deeper to access the results
+            $rootResults = array_merge(...array_values($resultMap));
+        }
+
         foreach ($rootResults as $result) {
             // Build a node and add it to the tree
             $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
