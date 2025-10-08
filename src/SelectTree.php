@@ -246,7 +246,10 @@ class SelectTree extends Field implements HasAffixActions
         );
 
         // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
-        $resultMap[$parent] = array_merge(...array_values($orphanedResults));
+        $resultMap[$parent] = [];
+        foreach($orphanedResults as $orphanedResult){
+            $resultMap[$parent] += $orphanedResult;
+        }
 
         // Recursively build the tree starting from the root (null parent)
         $rootResults = $resultMap[$parent] ?? [];
