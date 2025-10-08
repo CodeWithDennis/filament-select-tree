@@ -216,7 +216,9 @@ class SelectTree extends Field implements HasAffixActions
             $resultCache[$resultKey]['in_set'] = 1;
             // Move any cached children to the result map
             if(isset($resultCache[$resultKey]['children'])){
-                $resultMap[$resultKey] = array_merge($resultMap[$resultKey], $resultCache[$resultKey]['children']);
+                // Since the result map won't have a key for a given result until it's confirmed to be in the set (i.e. this very moment),
+                // we don't have to preserve the previous value for that key; it is guaranteed to have been unset
+                $resultMap[$resultKey] = $resultCache[$resultKey]['children'];
                 unset($resultCache[$resultKey]['children']);
             }
             $parentKey = $result->{$this->getParentAttribute()};
