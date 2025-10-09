@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use InvalidArgumentException;
 
 class SelectTree extends Field implements HasAffixActions
@@ -85,7 +86,7 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $storeResults = false;
 
-    protected Collection|array|null $results = null;
+    protected LazyCollection|array|null $results = null;
 
     protected Closure|bool|null $multiple = null;
 
@@ -179,8 +180,8 @@ class SelectTree extends Field implements HasAffixActions
             $nonNullParentQuery->withTrashed($this->withTrashed);
         }
 
-        $nullParentResults = $nullParentQuery->get();
-        $nonNullParentResults = $nonNullParentQuery->get();
+        $nullParentResults = $nullParentQuery->lazy();
+        $nonNullParentResults = $nonNullParentQuery->lazy();
 
         // Combine the results from both queries
         $combinedResults = $nullParentResults->concat($nonNullParentResults);
