@@ -29,7 +29,13 @@ html.dark .treeselect > .treeselect-input {
 }
 
 .treeselect-input__edit::placeholder, .treeselect-list__empty {
-    color: var(--color-white);
+    color: var(--gray-400);
+    cursor: default;
+}
+
+html.dark .treeselect-input__edit::placeholder,
+html.dark .treeselect-list__empty {
+    color: var(--gray-500);
     cursor: default;
 }
 
@@ -106,11 +112,6 @@ html.dark .treeselect > .treeselect-input {
 .treeselect-list.treeselect-list--single-select
     .treeselect-list__item--single-selected {
     font-weight: 500;
-}
-
-html.dark .treeselect-list {
-    --tw-ring-color: hsla(0, 0%, 100%, 0.1);
-    background-color: var(--gray-900);
 }
 
 html.dark .treeselect-list {
