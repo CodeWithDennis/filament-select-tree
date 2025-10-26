@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use InvalidArgumentException;
 
 class SelectTree extends Field implements HasAffixActions
@@ -85,7 +86,7 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $storeResults = false;
 
-    protected Collection|array|null $results = null;
+    protected LazyCollection|array|null $results = null;
 
     protected Closure|bool|null $multiple = null;
 
@@ -179,8 +180,8 @@ class SelectTree extends Field implements HasAffixActions
             $nonNullParentQuery->withTrashed($this->withTrashed);
         }
 
-        $nullParentResults = $nullParentQuery->get();
-        $nonNullParentResults = $nonNullParentQuery->get();
+        $nullParentResults = $nullParentQuery->lazy();
+        $nonNullParentResults = $nonNullParentQuery->lazy();
 
         // Combine the results from both queries
         $combinedResults = $nullParentResults->concat($nonNullParentResults);
@@ -206,14 +207,53 @@ class SelectTree extends Field implements HasAffixActions
         // Create a mapping of results by their parent IDs for faster lookup
         $resultMap = [];
 
+        // Create a cache of IDs
+        $resultCache = [];
+
         // Group results by their parent IDs
         foreach ($results as $result) {
-            $parentId = $result->{$this->getParentAttribute()};
-            if (! isset($resultMap[$parentId])) {
-                $resultMap[$parentId] = [];
+            // Cache the result as seen
+            $resultKey = $this->getCustomKey($result);
+            $resultCache[$resultKey]['in_set'] = 1;
+            // Move any cached children to the result map
+            if(isset($resultCache[$resultKey]['children'])){
+                // Since the result map won't have a key for a given result until it's confirmed to be in the set (i.e. this very moment),
+                // we don't have to preserve the previous value for that key; it is guaranteed to have been unset
+                $resultMap[$resultKey] = $resultCache[$resultKey]['children'];
+                unset($resultCache[$resultKey]['children']);
             }
-            $resultMap[$parentId][] = $result;
+            $parentKey = $result->{$this->getParentAttribute()};
+            if (! isset($resultCache[$parentKey])) {
+                // Before adding results to the map, cache the parentId to hold until the parent is confirmed to be in the result set
+                $resultCache[$parentKey]['in_set'] = 0;
+                $resultCache[$parentKey]['children'] = [];
+            }
+            if($resultCache[$parentKey]['in_set']){
+                // if the parent has been confirmed to be in the set, add directly to result map
+                $resultMap[$parentKey][] = $result;
+            } else {
+                // otherwise, hold the result in the children cache until the parent is confirmed to be in the result set
+                $resultCache[$parentKey]['children'][] = $result;
+            }
         }
+
+        // Filter the cache for missing parents in the result set and get the children
+        $orphanedResults = array_map(
+            fn($item) => $item['children'],
+            array_filter(
+                $resultCache,
+                fn($item) => !$item['in_set']
+            )
+        );
+
+        // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
+        $resultMap[$parent] = [];
+        foreach($orphanedResults as $orphanedResult){
+            $resultMap[$parent] += $orphanedResult;
+        }
+
+        // Recursively build the tree starting from the root (null parent)
+        $rootResults = $resultMap[$parent] ?? [];
 
         // Define disabled options
         $disabledOptions = $this->getDisabledOptions();
@@ -221,8 +261,6 @@ class SelectTree extends Field implements HasAffixActions
         // Define hidden options
         $hiddenOptions = $this->getHiddenOptions();
 
-        // Recursively build the tree starting from the root (null parent)
-        $rootResults = $resultMap[$parent] ?? [];
         foreach ($rootResults as $result) {
             // Build a node and add it to the tree
             $node = $this->buildNode($result, $resultMap, $disabledOptions, $hiddenOptions);
