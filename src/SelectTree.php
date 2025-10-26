@@ -216,7 +216,7 @@ class SelectTree extends Field implements HasAffixActions
             $resultKey = $this->getCustomKey($result);
             $resultCache[$resultKey]['in_set'] = 1;
             // Move any cached children to the result map
-            if(isset($resultCache[$resultKey]['children'])){
+            if (isset($resultCache[$resultKey]['children'])) {
                 // Since the result map won't have a key for a given result until it's confirmed to be in the set (i.e. this very moment),
                 // we don't have to preserve the previous value for that key; it is guaranteed to have been unset
                 $resultMap[$resultKey] = $resultCache[$resultKey]['children'];
@@ -228,7 +228,7 @@ class SelectTree extends Field implements HasAffixActions
                 $resultCache[$parentKey]['in_set'] = 0;
                 $resultCache[$parentKey]['children'] = [];
             }
-            if($resultCache[$parentKey]['in_set']){
+            if ($resultCache[$parentKey]['in_set']) {
                 // if the parent has been confirmed to be in the set, add directly to result map
                 $resultMap[$parentKey][] = $result;
             } else {
@@ -239,16 +239,16 @@ class SelectTree extends Field implements HasAffixActions
 
         // Filter the cache for missing parents in the result set and get the children
         $orphanedResults = array_map(
-            fn($item) => $item['children'],
+            fn ($item) => $item['children'],
             array_filter(
                 $resultCache,
-                fn($item) => !$item['in_set']
+                fn ($item) => ! $item['in_set']
             )
         );
 
         // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
         $resultMap[$parent] = [];
-        foreach($orphanedResults as $orphanedResult){
+        foreach ($orphanedResults as $orphanedResult) {
             $resultMap[$parent] += $orphanedResult;
         }
 
