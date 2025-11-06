@@ -15,7 +15,7 @@ building selection dropdowns with various customization options.
 You can install the package via composer:
 
 ```bash
-composer require codewithdennis/filament-select-tree
+composer require codewithdennis/filament-select-tree:3.x
 ```
 
 ```bash
