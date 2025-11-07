@@ -563,7 +563,7 @@ class SelectTree extends Field implements HasAffixActions
         );
     }
 
-    public function getResults(): Collection|array|null
+    public function getResults(): LazyCollection|array|null
     {
         return $this->evaluate($this->results);
     }
