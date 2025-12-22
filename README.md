@@ -137,6 +137,12 @@ Display individual leaf nodes instead of the main group when all leaf nodes are 
 ->grouped(false)
 ```
 
+Return parent node value if all of its children are selected, instead of individual leaf nodes.
+
+```php
+->isGroupedValue()
+```
+
 Hide the clearable icon
 
 ```php

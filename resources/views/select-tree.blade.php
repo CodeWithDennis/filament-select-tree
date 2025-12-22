@@ -39,6 +39,7 @@
             emptyText: @js($getEmptyLabel()),
             expandSelected: @js($getExpandSelected()),
             grouped: @js($getGrouped()),
+            isGroupedValue: @js($getIsGroupedValue()),
             openLevel: @js($getDefaultOpenLevel()),
             direction: @js($getDirection()),
             rtl: @js(__('filament-panels::layout.direction') === 'rtl'),
