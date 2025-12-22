@@ -95,6 +95,12 @@ Keep the dropdown open at all times
 ->alwaysOpen()
 ```
 
+Add the list as a static DOM element so that it doesn't overlap content
+
+```php
+->staticList()
+```
+
 Set nodes as dependent
 
 ```php
