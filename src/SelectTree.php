@@ -58,6 +58,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $grouped = true;
 
+    protected bool $isGroupedValue = false;
+
     protected Closure|Builder|null $query = null;
 
     protected string|Closure|null $relationship = null;
@@ -438,6 +440,13 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function isGroupedValue(bool $isGroupedValue = true): static
+    {
+        $this->isGroupedValue = $isGroupedValue;
+
+        return $this;
+    }
+
     public function defaultOpenLevel(Closure|int $defaultOpenLevel = 0): static
     {
         $this->defaultOpenLevel = $defaultOpenLevel;
@@ -536,6 +545,11 @@ class SelectTree extends Field implements HasAffixActions
     public function getGrouped(): bool
     {
         return $this->evaluate($this->grouped);
+    }
+
+    public function getIsGroupedValue(): bool
+    {
+        return $this->evaluate($this->isGroupedValue);
     }
 
     public function getWithTrashed(): bool

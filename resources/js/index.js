@@ -19,6 +19,7 @@ export default function selectTree({
     emptyText,
     expandSelected = true,
     grouped = true,
+    isGroupedValue = false,
     openLevel = 0,
     direction = 'auto'
 }) {
@@ -64,6 +65,7 @@ export default function selectTree({
                 emptyText,
                 expandSelected,
                 grouped,
+                isGroupedValue,
                 openLevel,
                 direction,
                 rtl
