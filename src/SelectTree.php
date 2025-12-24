@@ -38,6 +38,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $alwaysOpen = false;
 
+    protected bool $staticList = false;
+
     protected bool $independent = true;
 
     protected ?string $customKey = null;
@@ -492,6 +494,13 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function staticList(bool $staticList = true): static
+    {
+        $this->staticList = $staticList;
+
+        return $this;
+    }
+
     public function enableBranchNode(Closure|bool $enableBranchNode = true): static
     {
         $this->enableBranchNode = $enableBranchNode;
@@ -566,6 +575,11 @@ class SelectTree extends Field implements HasAffixActions
     public function getAlwaysOpen(): bool
     {
         return $this->evaluate($this->alwaysOpen);
+    }
+
+    public function getStaticList(): bool
+    {
+        return $this->evaluate($this->staticList);
     }
 
     public function getEnableBranchNode(): bool

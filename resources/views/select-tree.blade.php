@@ -34,6 +34,7 @@
             isIndependentNodes: @js($getIndependent()),
             showTags: @js($getMultiple()),
             alwaysOpen: @js($getAlwaysOpen()),
+            staticList: @js($getStaticList()),
             clearable: @js($getClearable()),
             emptyText: @js($getEmptyLabel()),
             expandSelected: @js($getExpandSelected()),
