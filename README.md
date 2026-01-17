@@ -143,6 +143,18 @@ Return parent node value if all of its children are selected, instead of individ
 ->isGroupedValue()
 ```
 
+Hide tags and display a count of selected items instead
+
+```php
+->showTags(false)
+```
+
+Customize the text shown if `showTags` is set to `false`, e.g. "{count} {tagsCountText}"
+
+```php
+->tagsCountText('elements selected')
+```
+
 Hide the clearable icon
 
 ```php
