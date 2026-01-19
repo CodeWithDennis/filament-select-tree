@@ -50,6 +50,10 @@ class SelectTree extends Field implements HasAffixActions
 
     protected null|int|string $parentNullValue = null;
 
+    protected bool|Closure|null $showTags = null;
+
+    protected string|Closure|null $tagsCountText = null;
+
     protected bool $clearable = true;
 
     protected bool $expandSelected = true;
@@ -428,6 +432,20 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate($this->parentNullValue);
     }
 
+    public function showTags(bool|Closure $value = true): static
+    {
+        $this->showTags = $value;
+
+        return $this;
+    }
+
+    public function tagsCountText(string|Closure $value): static
+    {
+        $this->tagsCountText = $value;
+
+        return $this;
+    }
+
     public function clearable(bool $clearable = true): static
     {
         $this->clearable = $clearable;
@@ -592,6 +610,16 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate(
             is_null($this->multiple) ? $this->getRelationship() instanceof BelongsToMany : $this->evaluate($this->multiple)
         );
+    }
+
+    public function getShowTags(): bool
+    {
+        return $this->evaluate($this->showTags) ?? $this->getMultiple();
+    }
+
+    public function getTagsCountText(): string
+    {
+        return $this->evaluate($this->tagsCountText) ?? 'elements selected';
     }
 
     public function getClearable(): bool
