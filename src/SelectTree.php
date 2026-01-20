@@ -94,7 +94,9 @@ class SelectTree extends Field implements HasAffixActions
 
     protected bool $storeResults = false;
 
-    protected LazyCollection|array|null $results = null;
+    protected Closure|array|null $getTreeUsing = null;
+
+    protected Collection|LazyCollection|array|null $results = null;
 
     protected Closure|bool|null $multiple = null;
 
@@ -542,15 +544,26 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function getTreeUsing(Closure|array $value): static
+    {
+        $this->getTreeUsing = $value;
+
+        return $this;
+    }
+
     public function getTree(): Collection|array
     {
+        if ($this->getTreeUsing) {
+            return $this->evaluate($this->getTreeUsing);
+        }
+
         return $this->evaluate($this->buildTree()
             ->when($this->prepend, fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend)))
             ->when($this->append, fn (Collection $tree) => $tree->push($this->evaluate($this->append)))
         );
     }
 
-    public function getResults(): Collection|array|null
+    public function getResults(): Collection|LazyCollection|array|null
     {
         return $this->evaluate($this->results);
     }

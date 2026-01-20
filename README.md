@@ -275,6 +275,66 @@ If you need to append an item to the tree menu, use the `append` method. This me
     ])
 ```
 
+If you need full control over the tree structure, you can use `getTreeUsing` to provide a custom tree array, or a closure that resolves to an array.
+
+Using an array:
+
+```php
+SelectTree::make('categories')
+    ->getTreeUsing([
+        [
+            'name' => 'Parent Category',
+            'value' => '1',
+            'children' => [
+                [
+                    'name' => 'Child Category',
+                    'value' => '2',
+                    'children' => [],
+                ],
+            ],
+        ],
+        [
+            'name' => 'Another Category',
+            'value' => '3',
+            'children' => [],
+        ],
+    ])
+```
+
+Using a closure for dynamic data:
+
+```php
+SelectTree::make('categories')
+    ->getTreeUsing(function () {
+        return Category::query()
+            ->get()
+            ->map(fn ($category) => [
+                'name' => $category->name,
+                'value' => $category->id,
+                'children' => $category->children->map(fn ($child) => [
+                    'name' => $child->name,
+                    'value' => $child->id,
+                    'children' => [],
+                ])->toArray(),
+            ])
+            ->toArray();
+    })
+```
+
+The tree structure should follow this format:
+
+```php
+[
+    [
+        'name' => 'Display Name',
+        'value' => 'option_value',
+        'disabled' => false, // optional
+        'hidden' => false, // optional
+        'children' => [], // optional
+    ],
+]
+```
+
 ## Filters
 
 Use the tree in your table filters. Here's an example to show you how.
