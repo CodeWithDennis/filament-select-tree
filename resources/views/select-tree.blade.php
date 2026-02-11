@@ -15,7 +15,7 @@
         wire:key="{{ $getTreeKey() }}"
         wire:ignore
         @if (FilamentView::hasSpaMode(url()->current()))
-            x-load="visible || event (ax-modal-opened)"
+            x-load="visible || event (x-modal-opened)"
         @else
             x-load
         @endif
