@@ -11,6 +11,8 @@
 @endphp
 
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
+    {{ new \Illuminate\View\ComponentAttributeBag($getExtraAttributes()) }}
+
     <div
         wire:key="{{ $getTreeKey() }}"
         wire:ignore
