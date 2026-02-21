@@ -206,10 +206,8 @@ class SelectTree extends Field implements HasAffixActions
 
     private function buildTreeFromResults($results, $parent = null): Collection
     {
-        // Assign the parent's null value to the $parent variable if it's not null
-        if ($parent == null || $parent == $this->getParentNullValue()) {
-            $parent = $this->getParentNullValue() ?? $parent;
-        }
+        // Assign the parent's null value to the $parent variable if it's not null or default to empty string
+        $parent ??= $this->getParentNullValue() ?? '';
 
         // Create a collection to store the tree
         $tree = collect();
@@ -232,7 +230,8 @@ class SelectTree extends Field implements HasAffixActions
                 $resultMap[$resultKey] = $resultCache[$resultKey]['children'];
                 unset($resultCache[$resultKey]['children']);
             }
-            $parentKey = $result->{$this->getParentAttribute()};
+            // Get the result's parent's key, defaulting to empty string for no parent
+            $parentKey = $result->{$this->getParentAttribute()} ?? '';
             if (! isset($resultCache[$parentKey])) {
                 // Before adding results to the map, cache the parentId to hold until the parent is confirmed to be in the result set
                 $resultCache[$parentKey]['in_set'] = 0;
