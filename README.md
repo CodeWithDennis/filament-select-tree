@@ -385,7 +385,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 
 ## Credits
 
-- [CodeWithDennis](https://github.com/CodeWithDennis)
+- [CodeWithDennis](https://github.com/CodeWithDennis) / [Website](https://codewithdennis.com)
 - [Dipson88](https://github.com/dipson88/treeselectjs)
 - [All Contributors](../../contributors)
 
