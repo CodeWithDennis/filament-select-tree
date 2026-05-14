@@ -446,7 +446,7 @@ class SelectTree extends Field implements HasAffixActions
         } elseif (is_null($this->append)) {
             // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
         } else {
-            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
+            throw new InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
         }
 
         return $this;
