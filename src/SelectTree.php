@@ -171,18 +171,36 @@ class SelectTree extends Field implements HasAffixActions
 
     protected function buildTree(): Collection
     {
-        // Start with two separate query builders
-        $nullParentQuery = $this->getQuery()->clone()->where($this->getParentAttribute(), $this->getParentNullValue());
-        $nonNullParentQuery = $this->getQuery()->clone()->whereNot($this->getParentAttribute(), $this->getParentNullValue());
+        $parentAttribute = $this->getParentAttribute();
+        $parentNullValue = $this->getParentNullValue();
+        $keyName = $this->getQuery()->getModel()->getKeyName();
 
-        // If we're not at the root level and a modification callback is provided, apply it to null query
+        $nullParentQuery = $this->getQuery()->clone()->where($parentAttribute, $parentNullValue);
+        $nonNullParentQuery = $this->getQuery()->clone()->whereNot($parentAttribute, $parentNullValue);
+
         if ($this->modifyQueryUsing) {
-            $nullParentQuery = $this->evaluate($this->modifyQueryUsing, ['query' => $nullParentQuery]);
+            $rootQuery = $nullParentQuery->clone();
+            $modified = $this->evaluate($this->modifyQueryUsing, ['query' => $rootQuery]);
+            $rootQuery = $modified ?? $rootQuery;
+
+            if ($this->withTrashed) {
+                $rootQuery->withTrashed($this->withTrashed);
+            }
+
+            $rootIds = $rootQuery->pluck($keyName)->all();
+            $subtreeIds = $this->collectIdsInSubtrees($rootIds);
+
+            if ($subtreeIds === []) {
+                return $this->buildTreeFromResults(collect());
+            }
+
+            $nullParentQuery->whereIn($keyName, $subtreeIds);
+            $nonNullParentQuery->whereIn($keyName, $subtreeIds);
         }
 
-        // If we're at the child level and a modification callback is provided, apply it to non null query
         if ($this->modifyChildQueryUsing) {
-            $nonNullParentQuery = $this->evaluate($this->modifyChildQueryUsing, ['query' => $nonNullParentQuery]);
+            $modified = $this->evaluate($this->modifyChildQueryUsing, ['query' => $nonNullParentQuery]);
+            $nonNullParentQuery = $modified ?? $nonNullParentQuery;
         }
 
         if ($this->withTrashed) {
@@ -202,6 +220,42 @@ class SelectTree extends Field implements HasAffixActions
         }
 
         return $this->buildTreeFromResults($combinedResults);
+    }
+
+    /**
+     * @param  array<int|string>  $rootIds
+     * @return array<int|string>
+     */
+    protected function collectIdsInSubtrees(array $rootIds): array
+    {
+        if ($rootIds === []) {
+            return [];
+        }
+
+        $parentAttribute = $this->getParentAttribute();
+        $keyName = $this->getQuery()->getModel()->getKeyName();
+        $allIds = collect($rootIds);
+        $frontier = array_values(array_unique($rootIds, SORT_REGULAR));
+
+        while ($frontier !== []) {
+            $childQuery = $this->getQuery()->clone()->whereIn($parentAttribute, $frontier);
+
+            if ($this->withTrashed) {
+                $childQuery->withTrashed($this->withTrashed);
+            }
+
+            $children = $childQuery->pluck($keyName)->all();
+            $newIds = array_values(array_diff($children, $allIds->all()));
+
+            if ($newIds === []) {
+                break;
+            }
+
+            $frontier = $newIds;
+            $allIds = $allIds->merge($newIds);
+        }
+
+        return $allIds->unique()->values()->all();
     }
 
     private function buildTreeFromResults($results, $parent = null): Collection
