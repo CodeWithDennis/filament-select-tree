@@ -47,20 +47,72 @@ SelectTree::make('category_id')
     ->query(fn() => Category::query(), 'name', 'parent_id')
 ```
 
-## Custom Query
+## Query scoping
 
-Customize the parent query
+### `scopeRelationshipQueryUsing`
+
+Runs on **every** query used to build the tree: walking descendants, loading root rows, and loading child rows. Put **tenant or locale filters**, **`select()`**, **`with()`**, and any constraint that must hold for **all** nodes here.
 
 ```php
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+use Illuminate\Database\Eloquent\Builder;
+
 SelectTree::make('categories')
-    ->relationship(relationship: 'categories', titleAttribute: 'name', parentAttribute: 'parent_id', modifyQueryUsing: fn($query) => $query));
+    ->scopeRelationshipQueryUsing(
+        fn (Builder $query): Builder => $query->where('language_code', app()->getLocale())
+    )
+    ->relationship('categories', 'name', 'parent_id');
 ```
 
-Customize the child query
+Add tenant or team scoping the same way (e.g. `whereBelongsTo($tenant)` or `where('tenant_id', …)`).
+
+If you narrow columns, include at least the tree key, parent column, title attribute, and any column used by `withKey()`:
 
 ```php
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+use Illuminate\Database\Eloquent\Builder;
+
 SelectTree::make('categories')
-    ->relationship(relationship: 'categories', titleAttribute: 'name', parentAttribute: 'parent_id', modifyChildQueryUsing: fn($query) => $query));
+    ->scopeRelationshipQueryUsing(
+        fn (Builder $query): Builder => $query->select(['id', 'parent_id', 'name'])
+    )
+    ->relationship('categories', 'name', 'parent_id');
+```
+
+### `modifyQueryUsing`
+
+Optional. When set, it runs **only** on a clone of the **root** query to decide which root records seed each subtree (then IDs are clamped with `whereIn`). It is **not** merged into descendant queries—using root-only conditions as if they applied globally would contradict child rows and hide branches.
+
+Use it for extra filters on which nodes count as roots (e.g. only published roots), and keep shared rules in `scopeRelationshipQueryUsing`.
+
+```php
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+use Illuminate\Database\Eloquent\Builder;
+
+SelectTree::make('categories')
+    ->relationship(
+        relationship: 'categories',
+        titleAttribute: 'name',
+        parentAttribute: 'parent_id',
+        modifyQueryUsing: fn (Builder $query): Builder => $query->where('is_featured', true),
+    );
+```
+
+### `modifyChildQueryUsing`
+
+Runs only on the **non-root** query (rows whose parent is not the null parent value), after subtree clamping when `modifyQueryUsing` is used.
+
+```php
+use CodeWithDennis\FilamentSelectTree\SelectTree;
+use Illuminate\Database\Eloquent\Builder;
+
+SelectTree::make('categories')
+    ->relationship(
+        relationship: 'categories',
+        titleAttribute: 'name',
+        parentAttribute: 'parent_id',
+        modifyChildQueryUsing: fn (Builder $query): Builder => $query->orderBy('sort_order'),
+    );
 ```
 
 ## Methods

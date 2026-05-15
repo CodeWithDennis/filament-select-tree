@@ -72,6 +72,12 @@ class SelectTree extends Field implements HasAffixActions
 
     protected ?Closure $modifyChildQueryUsing = null;
 
+    /**
+     * Runs on every tree query (descendant walk and both final loads). Use for tenant, locale,
+     * narrowed columns, eager loads, etc. Put shared constraints here instead of {@see modifyQueryUsing}.
+     */
+    protected ?Closure $scopeRelationshipQueryUsing = null;
+
     protected Closure|int $defaultOpenLevel = 0;
 
     protected string $direction = 'auto';
@@ -169,14 +175,29 @@ class SelectTree extends Field implements HasAffixActions
         $this->treeKey('treeKey-'.rand());
     }
 
+    /**
+     * Fresh {@see getQuery()} clone with {@see scopeRelationshipQueryUsing} applied when set.
+     */
+    protected function newRelationshipQuery(): Builder
+    {
+        $query = $this->getQuery()->clone();
+
+        if ($this->scopeRelationshipQueryUsing) {
+            $modified = $this->evaluate($this->scopeRelationshipQueryUsing, ['query' => $query]);
+            $query = $modified ?? $query;
+        }
+
+        return $query;
+    }
+
     protected function buildTree(): Collection
     {
         $parentAttribute = $this->getParentAttribute();
         $parentNullValue = $this->getParentNullValue();
         $keyName = $this->getQuery()->getModel()->getKeyName();
 
-        $nullParentQuery = $this->getQuery()->clone()->where($parentAttribute, $parentNullValue);
-        $nonNullParentQuery = $this->getQuery()->clone()->whereNot($parentAttribute, $parentNullValue);
+        $nullParentQuery = $this->newRelationshipQuery()->where($parentAttribute, $parentNullValue);
+        $nonNullParentQuery = $this->newRelationshipQuery()->whereNot($parentAttribute, $parentNullValue);
 
         if ($this->modifyQueryUsing) {
             $rootQuery = $nullParentQuery->clone();
@@ -238,7 +259,7 @@ class SelectTree extends Field implements HasAffixActions
         $frontier = array_values(array_unique($rootIds, SORT_REGULAR));
 
         while ($frontier !== []) {
-            $childQuery = $this->getQuery()->clone()->whereIn($parentAttribute, $frontier);
+            $childQuery = $this->newRelationshipQuery()->whereIn($parentAttribute, $frontier);
 
             if ($this->withTrashed) {
                 $childQuery->withTrashed($this->withTrashed);
@@ -372,6 +393,16 @@ class SelectTree extends Field implements HasAffixActions
         $this->parentAttribute = $parentAttribute;
         $this->modifyQueryUsing = $modifyQueryUsing;
         $this->modifyChildQueryUsing = $modifyChildQueryUsing;
+
+        return $this;
+    }
+
+    /**
+     * @param  ?Closure(array{query: Builder}): (Builder|null)  $callback
+     */
+    public function scopeRelationshipQueryUsing(?Closure $callback): static
+    {
+        $this->scopeRelationshipQueryUsing = $callback;
 
         return $this;
     }
