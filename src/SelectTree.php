@@ -537,8 +537,8 @@ class SelectTree extends Field implements HasAffixActions
     public function getTree(): Collection
     {
         return Collection::wrap($this->evaluate($this->getTreeUsing) ?? $this->buildTree())
-            ->when(filled($this->prepend), fn(Collection $tree) => $tree->prepend($this->getPrependedItems()))
-            ->when(filled($this->append), fn(Collection $tree) => $tree->push($this->getAppendedItems()));
+            ->when(filled($this->prepend), fn(Collection $tree) => $tree->unshift(...$this->generatePrependedItems()))
+            ->when(filled($this->append), fn(Collection $tree) => $tree->push(...$this->generateAppendedItems()));
     }
 
     public function getResults(): Collection|LazyCollection|array|null
@@ -590,34 +590,60 @@ class SelectTree extends Field implements HasAffixActions
         );
     }
 
-    public function getPrependedItems(): ?array
+    protected function generatePrependedItems(): \Generator
     {
         $prependedItems = $this->evaluate($this->prepend);
 
-        if (is_array($prependedItems) && isset($prependedItems['name'], $prependedItems['value'])) {
-            $prependedItems['value'] = (string) $prependedItems['value'];
+        if (is_array($prependedItems)) {
+            if (isset($prependedItems['name'], $prependedItems['value'])) {
+                $prependedItems['value'] = (string) $prependedItems['value'];
+                yield $prependedItems;
+            } elseif (is_array($prependedItems[0])) {
+                foreach ($prependedItems as $prependedItem) {
+                    if (isset($prependedItem['name'], $prependedItem['value'])) {
+                        $prependedItem['value'] = (string) $prependedItem['value'];
+                        yield $prependedItem;
+                    }
+                }
+            }
         } elseif (is_null($prependedItems)) {
             // Avoid throwing an exception in case $prepend is explicitly set to null, or a Closure evaluates to null.
         } else {
-            throw new InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
+            throw new InvalidArgumentException('The provided prepend value must be an array or an array of arrays with "name" and "value" keys.');
         }
+    }
 
-        return $prependedItems;
+    public function getPrependedItems(): ?array
+    {
+        return iterator_to_array($this->generatePrependedItems());
+    }
+
+    protected function generateAppendedItems(): \Generator
+    {
+        $appendedItems = $this->evaluate($this->append);
+
+        if (is_array($appendedItems)) {
+            if (isset($appendedItems['name'], $appendedItems['value'])) {
+                $appendedItems['value'] = (string) $appendedItems['value'];
+                yield $appendedItems;
+            } elseif (is_array($appendedItems[0])) {
+                foreach ($appendedItems as $appendedItem) {
+                    if (isset($appendedItem['name'], $appendedItem['value'])) {
+                        $appendedItem['value'] = (string) $appendedItem['value'];
+                        yield $appendedItem;
+                    }
+                }
+            }
+        } elseif (is_null($appendedItems)) {
+            // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
+        } else {
+            throw new InvalidArgumentException('The provided append value must be an array or an array of arrays with "name" and "value" keys.');
+        }
     }
 
     public function getAppendedItems(): ?array
     {
-        $appendedItems = $this->evaluate($this->append);
-
-        if (is_array($appendedItems) && isset($appendedItems['name'], $appendedItems['value'])) {
-            $appendedItems['value'] = (string) $appendedItems['value'];
-        } elseif (is_null($appendedItems)) {
-            // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
-        } else {
-            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
-        }
-
-        return $appendedItems;
+        return iterator_to_array($this->generateAppendedItems());
     }
 
     public function getShowTags(): bool
