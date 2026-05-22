@@ -537,8 +537,8 @@ class SelectTree extends Field implements HasAffixActions
     public function getTree(): Collection
     {
         return Collection::wrap($this->evaluate($this->getTreeUsing) ?? $this->buildTree())
-            ->when(filled($this->prepend), fn(Collection $tree) => $tree->prepend($this->getPrependedItems()))
-            ->when(filled($this->append), fn(Collection $tree) => $tree->push($this->getAppendedItems()));
+            ->when(filled($this->prepend), fn (Collection $tree) => $tree->prepend($this->getPrependedItems()))
+            ->when(filled($this->append), fn (Collection $tree) => $tree->push($this->getAppendedItems()));
     }
 
     public function getResults(): Collection|LazyCollection|array|null
@@ -614,7 +614,7 @@ class SelectTree extends Field implements HasAffixActions
         } elseif (is_null($appendedItems)) {
             // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
         } else {
-            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
+            throw new InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
         }
 
         return $appendedItems;
