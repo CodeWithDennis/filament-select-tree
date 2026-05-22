@@ -370,30 +370,14 @@ class SelectTree extends Field implements HasAffixActions
 
     public function prepend(Closure|array|null $prepend = null): static
     {
-        $this->prepend = $this->evaluate($prepend);
-
-        if (is_array($this->prepend) && isset($this->prepend['name'], $this->prepend['value'])) {
-            $this->prepend['value'] = (string) $this->prepend['value'];
-        } elseif (is_null($this->prepend)) {
-            // Avoid throwing an exception in case $prepend is explicitly set to null, or a Closure evaluates to null.
-        } else {
-            throw new InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
-        }
+        $this->prepend = $prepend;
 
         return $this;
     }
 
     public function append(Closure|array|null $append = null): static
     {
-        $this->append = $this->evaluate($append);
-
-        if (is_array($this->append) && isset($this->append['name'], $this->append['value'])) {
-            $this->append['value'] = (string) $this->append['value'];
-        } elseif (is_null($this->append)) {
-            // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
-        } else {
-            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
-        }
+        $this->append = $append;
 
         return $this;
     }
@@ -553,8 +537,8 @@ class SelectTree extends Field implements HasAffixActions
     public function getTree(): Collection
     {
         return Collection::wrap($this->evaluate($this->getTreeUsing) ?? $this->buildTree())
-            ->when($this->prepend, fn (Collection $tree) => $tree->prepend($this->evaluate($this->prepend)))
-            ->when($this->append, fn (Collection $tree) => $tree->push($this->evaluate($this->append)));
+            ->when(filled($this->prepend), fn(Collection $tree) => $tree->prepend($this->getPrependedItems()))
+            ->when(filled($this->append), fn(Collection $tree) => $tree->push($this->getAppendedItems()));
     }
 
     public function getResults(): Collection|LazyCollection|array|null
@@ -604,6 +588,36 @@ class SelectTree extends Field implements HasAffixActions
         return $this->evaluate(
             is_null($this->multiple) ? $this->getRelationship() instanceof BelongsToMany : $this->evaluate($this->multiple)
         );
+    }
+
+    public function getPrependedItems(): ?array
+    {
+        $prependedItems = $this->evaluate($this->prepend);
+
+        if (is_array($prependedItems) && isset($prependedItems['name'], $prependedItems['value'])) {
+            $prependedItems['value'] = (string) $prependedItems['value'];
+        } elseif (is_null($prependedItems)) {
+            // Avoid throwing an exception in case $prepend is explicitly set to null, or a Closure evaluates to null.
+        } else {
+            throw new InvalidArgumentException('The provided prepend value must be an array with "name" and "value" keys.');
+        }
+
+        return $prependedItems;
+    }
+
+    public function getAppendedItems(): ?array
+    {
+        $appendedItems = $this->evaluate($this->append);
+
+        if (is_array($appendedItems) && isset($appendedItems['name'], $appendedItems['value'])) {
+            $appendedItems['value'] = (string) $appendedItems['value'];
+        } elseif (is_null($appendedItems)) {
+            // Avoid throwing an exception in case $append is explicitly set to null, or a Closure evaluates to null.
+        } else {
+            throw new \InvalidArgumentException('The provided append value must be an array with "name" and "value" keys.');
+        }
+
+        return $appendedItems;
     }
 
     public function getShowTags(): bool
