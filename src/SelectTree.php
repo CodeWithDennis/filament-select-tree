@@ -248,22 +248,23 @@ class SelectTree extends Field implements HasAffixActions
             }
         }
 
-        if (! $this->hasStrictNullParentRootNodes()) {
+        // If the tree has strict rull parent root nodes, only retrieve children whose parent is the null value
+        // Otherwise, promote other orphaned children to root nodes
+        $orphanedResults = $this->hasStrictNullParentRootNodes()
+        ? [$parent => $resultCache[$parent]['children']]
+        : array_map(
+            fn ($item) => $item['children'],
+            array_filter(
+                $resultCache,
+                fn ($item) => ! $item['in_set']
+            )
+        );
 
-            // Filter the cache for missing parents in the result set and get the children
-            $orphanedResults = array_map(
-                fn ($item) => $item['children'],
-                array_filter(
-                    $resultCache,
-                    fn ($item) => ! $item['in_set']
-                )
-            );
+        // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
 
-            // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
-            $resultMap[$parent] = [];
-            foreach ($orphanedResults as $orphanedResult) {
-                $resultMap[$parent] += $orphanedResult;
-            }
+        $resultMap[$parent] = [];
+        foreach ($orphanedResults as $orphanedResult) {
+            $resultMap[$parent] += $orphanedResult;
         }
 
         // Recursively build the tree starting from the root (null parent)
