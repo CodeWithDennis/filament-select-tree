@@ -72,6 +72,8 @@ class SelectTree extends Field implements HasAffixActions
 
     protected ?Closure $modifyChildQueryUsing = null;
 
+    protected Closure|bool $strictNullParentRootNodes = false;
+
     protected Closure|int $defaultOpenLevel = 0;
 
     protected string $direction = 'auto';
@@ -246,8 +248,11 @@ class SelectTree extends Field implements HasAffixActions
             }
         }
 
-        // Filter the cache for missing parents in the result set and get the children
-        $orphanedResults = array_map(
+        // If the tree has strict rull parent root nodes, only retrieve children whose parent is the null value
+        // Otherwise, promote other orphaned children to root nodes
+        $orphanedResults = $this->hasStrictNullParentRootNodes()
+        ? [$parent => $resultCache[$parent]['children']]
+        : array_map(
             fn ($item) => $item['children'],
             array_filter(
                 $resultCache,
@@ -256,6 +261,7 @@ class SelectTree extends Field implements HasAffixActions
         );
 
         // Move any remaining children from the cache into the root of the tree, since their parents do not show up in the result set
+
         $resultMap[$parent] = [];
         foreach ($orphanedResults as $orphanedResult) {
             $resultMap[$parent] += $orphanedResult;
@@ -333,6 +339,13 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
+    public function strictNullParentRootNodes(Closure|bool $condition = true): static
+    {
+        $this->strictNullParentRootNodes = $condition;
+
+        return $this;
+    }
+
     public function withCount(bool $withCount = true): static
     {
         $this->withCount = $withCount;
@@ -398,6 +411,11 @@ class SelectTree extends Field implements HasAffixActions
         }
 
         return $this->getRelationship()->getRelated()->query();
+    }
+
+    public function hasStrictNullParentRootNodes(): bool
+    {
+        return $this->evaluate($this->strictNullParentRootNodes);
     }
 
     public function getTitleAttribute(): string

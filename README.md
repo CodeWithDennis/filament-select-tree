@@ -63,6 +63,16 @@ SelectTree::make('categories')
     ->relationship(relationship: 'categories', titleAttribute: 'name', parentAttribute: 'parent_id', modifyChildQueryUsing: fn($query) => $query));
 ```
 
+Note: when you filter the parent query, any results found by the child query whose parents have been filtered out will be promoted to root nodes by default (to prevent empty result sets).
+To disable this feature, use the `strictNullParentRootNodes()` configuration method
+
+```php
+SelectTree::make('categories')
+    ->relationship(relationship: 'categories', titleAttribute: 'name', parentAttribute: 'parent_id', modifyQueryUsing: fn($query) => $query->where('id', 1))
+    ->strictNullParentRootNodes(); // only children of parent results from the parent query will be included in the tree
+```
+
+
 ## Methods
 
 Set a custom placeholder when no items are selected
