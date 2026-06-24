@@ -168,7 +168,7 @@ class SelectTree extends Field implements HasAffixActions
             static fn (SelectTree $component): ?Action => $component->getCreateOptionAction(),
         ]);
 
-        $this->treeKey('treeKey-'.rand());
+        $this->treeKey(fn (SelectTree $component): string => 'treeKey-'.$component->getStatePath());
     }
 
     protected function buildTree(): Collection
@@ -810,7 +810,7 @@ class SelectTree extends Field implements HasAffixActions
         return $this;
     }
 
-    public function treeKey(string $treeKey): static
+    public function treeKey(Closure|string $treeKey): static
     {
         $this->treeKey = $treeKey;
 
