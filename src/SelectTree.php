@@ -251,7 +251,7 @@ class SelectTree extends Field implements HasAffixActions
         // If the tree has strict rull parent root nodes, only retrieve children whose parent is the null value
         // Otherwise, promote other orphaned children to root nodes
         $orphanedResults = $this->hasStrictNullParentRootNodes()
-        ? [$parent => $resultCache[$parent]['children']]
+        ? [$parent => $resultCache[$parent]['children'] ?? []]
         : array_map(
             fn ($item) => $item['children'],
             array_filter(
