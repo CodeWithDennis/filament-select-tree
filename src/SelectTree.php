@@ -264,7 +264,9 @@ class SelectTree extends Field implements HasAffixActions
 
         $resultMap[$parent] = [];
         foreach ($orphanedResults as $orphanedResult) {
-            $resultMap[$parent] += $orphanedResult;
+            foreach ($orphanedResult as $orphan) {
+                $resultMap[$parent][] = $orphan;
+            }
         }
 
         // Recursively build the tree starting from the root (null parent)
